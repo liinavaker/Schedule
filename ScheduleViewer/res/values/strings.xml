@@ -4,5 +4,6 @@
     <string name="hello">Hello World, ScheduleViewerActivity!</string>
     <string name="app_name">OIS Schedule Viewer</string>
     <string name="LoremIpsum">Siia tuleb tunniplaan koos meelespeade optsioonidega</string>
+    <string name="schoolname">Eesti Infotehnoloogia Kolledži</string>
 
 </resources>

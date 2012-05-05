@@ -2,10 +2,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    android:background="#6B6B6B">
 
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingTop="70dip"
+        android:src="@drawable/ois" />
+    
     <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dip"
+        android:layout_gravity="center"
+        android:textSize="9pt"
+        android:text="@string/schoolname"
+        />
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dip"
+        android:layout_gravity="center"
+        android:textSize="9pt"
+        android:text="tunniplaan"
+        />
 
 </LinearLayout>
