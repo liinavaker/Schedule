@@ -3,7 +3,8 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" 
-    android:background="#6B6B6B">
+    android:background="#6B6B6B"
+    android:padding="10dip">
 
 
     <ImageView
@@ -32,4 +33,29 @@
         android:text="tunniplaan"
         />
 
+    
+    <LinearLayout 
+ 	    android:layout_width="fill_parent"
+    	android:layout_height="fill_parent"
+		android:orientation="horizontal"
+		android:paddingTop="20dip" 
+        android:weightSum="1">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.75"
+        android:text="Tudeng"
+        android:textSize="8pt"
+        />
+        
+    <MultiAutoCompleteTextView
+        android:id="@+id/spinner1"
+        android:layout_width= "match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.25"
+        />
+
+    
+	</LinearLayout>
 </LinearLayout>
