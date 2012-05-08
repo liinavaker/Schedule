@@ -1,6 +1,5 @@
 package ee.itcollege.android.schedule;
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,36 +8,34 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
-	
 public class ScheduleViewerActivity extends Activity {
-	
-	
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		getUserTimetable("2224");
+		getUserTimetable(userID);
 	}
-	
-	
+
 	public String userID = "2224";
+
 	private ArrayList<Event> events = new ArrayList<Event>();
-	
+
 	public void getUserTimetable(String userID) {
 		Log.d("getUserTimetable", "UserID: " + userID);
-		
+
 		try {
 			URL url = new URL(
 					"https://itcollege.ois.ee/schedule?&format=json&student_id="
@@ -50,48 +47,51 @@ public class ScheduleViewerActivity extends Activity {
 	}
 
 	private void requestComplete(String result) {
-		//events.clear();
+		// events.clear();
 		try {
-			JSONArray results = new JSONArray(result);
+			JSONObject json = new JSONObject(result);
 			
-			//SIIT EI SAA ENAM EDASI. 
-			
-			Log.d("requestComplete", "result: " + result);
-			Log.d("requestComplete", "@requestComplete TRY");
-			for (int i=0; i<results.length(); i++) {
-				JSONObject timetableJson = (JSONObject) results.get(i);
-				Event event = new Event();
-				String test = results.getJSONObject(i).getString("startDate");
-				Log.d("requestComplete", "@@test: " + test);
-				//event.setStartDate(results.getJSONObject(i).getString("startDate"));
+			@SuppressWarnings("unchecked")
+			Iterator<String> i = json.keys();
+			while (i.hasNext()) {
+				String paev = i.next();
 				
-				String startDate = timetableJson.getString("startDate");
-				//String endDate = timetableJson.getString("endDate");
-				//String subject = timetableJson.getString("subject");
-				//String location = timetableJson.getString("location");
-				//String subjectID = timetableJson.getString("Ainekood");
-				//String lecturer = timetableJson.getString("\u00d5ppej\u00f5ud");
-				//String subjectType = timetableJson.getString("T\u00fc\u00fcp");
-				//String weekday = timetableJson.getString("weekday");
+				JSONArray timetableJson = new JSONArray(paev);
+				for (int j = 0; j < timetableJson.length(); j++) {
+					JSONObject tweetJson = (JSONObject) timetableJson.get(j);
+					String text = tweetJson.getString("startDate");
+					Log.d("requestComplete", "startDate: " +text);
+				}
+					
+					
+					//Event event = new Event();
+				// event.setStartDate(results.getJSONObject(i).getString("startDate"));
 
-				
+				// String endDate = timetableJson.getString("endDate");
+				// String subject = timetableJson.getString("subject");
+				// String location = timetableJson.getString("location");
+				// String subjectID = timetableJson.getString("Ainekood");
+				// String lecturer =
+				// timetableJson.getString("\u00d5ppej\u00f5ud");
+				// String subjectType =
+				// timetableJson.getString("T\u00fc\u00fcp");
+				// String weekday = timetableJson.getString("weekday");
+
 				Log.d("requestComplete", "------------");
-				Log.d("requestComplete", "startDate: " + startDate );
-				//Log.d("requestComplete", "endDate: " + endDate );
-				//Log.d("requestComplete", "subject: " + subject );
-				//Log.d("requestComplete", "location: " + location);
-				
-				
-				event.setStartDate(startDate);
-				//event.setStartDate(endDate);
-				//event.setStartDate(subject);
-				//event.setStartDate(location);
-				//event.setStartDate(subjectID);
-				//event.setStartDate(lecturer);
-				//event.setStartDate(subjectType);
-				//event.setStartDate(weekday);
-				events.add(event);
-				
+
+				// Log.d("requestComplete", "endDate: " + endDate );
+				// Log.d("requestComplete", "subject: " + subject );
+				// Log.d("requestComplete", "location: " + location);
+
+				// event.setStartDate(endDate);
+				// event.setStartDate(subject);
+				// event.setStartDate(location);
+				// event.setStartDate(subjectID);
+				// event.setStartDate(lecturer);
+				// event.setStartDate(subjectType);
+				// event.setStartDate(weekday);
+				//events.add(event);
+
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -105,7 +105,7 @@ public class ScheduleViewerActivity extends Activity {
 			StringBuilder sb = new StringBuilder();
 
 			try {
-				
+
 				HttpURLConnection connection = (HttpURLConnection) params[0]
 						.openConnection();
 				BufferedReader reader = new BufferedReader(
@@ -132,7 +132,5 @@ public class ScheduleViewerActivity extends Activity {
 			requestComplete(result);
 		}
 	}
-	
-	
-	
+
 }
