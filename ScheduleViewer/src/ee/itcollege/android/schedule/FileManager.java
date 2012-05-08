@@ -29,14 +29,12 @@ public class FileManager {
 	    + "/download/"; // put the downloaded file here
 
     @SuppressWarnings({ "javadoc", "nls" })
-    public void DownloadFromUrl(String imageURL, String fileName) { // this is
-								    // the
-								    // downloader
-								    // method
+    public void DownloadFromUrl(String imageURL, String fileName) {
+	// this is the downloader method
 	try {
 	    URL url = new URL(imageURL);
-	    @SuppressWarnings("unqualified-field-access")
-	    File file = new File(PATH + fileName);
+
+	    File file = new File(this.PATH + fileName);
 
 	    long startTime = System.currentTimeMillis();
 	    Log.d("ImageManager", "download begining");

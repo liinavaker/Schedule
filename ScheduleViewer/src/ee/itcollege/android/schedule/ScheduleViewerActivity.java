@@ -17,11 +17,10 @@ public class ScheduleViewerActivity extends Activity {
     public void onCreate(Bundle savedInstanceState, String URI) {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.main);
-
-	/* new FileManager()
+new FileManager()
 		.DownloadFromUrl(
-			"https://itcollege.ois.ee/et/schedule?&format=json&student_id=1679", "failinimi"); //$NON-NLS-1$
-*/
+			"https://itcollege.ois.ee/et/schedule?&format=json&student_id=1679", "failinimi"); //$NON-NLS-1$ //$NON-NLS-2$
+/* eikommentaari */
     }
 
 }
