@@ -13,13 +13,18 @@ import org.apache.http.util.ByteArrayBuffer;
  
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
  
 public class FileManager {
 	
-	 private final String PATH = Environment.getExternalStorageDirectory()+ "/download/";  //put the downloaded file here
- 
-        public void DownloadFromUrl(String imageURL, String fileName) {  //this is the downloader method
-                try {
+	 final static String PATH = Environment.getExternalStorageDirectory() + "/download/";
+
+        public void DownloadFromUrl(String imageURL, String fileName) {  
+        			File dir = new File(PATH);
+        			dir.mkdirs();
+        			
+        			
+        	try {
                         URL url = new URL(imageURL);
                         File file = new File(PATH + fileName);
  
@@ -51,11 +56,12 @@ public class FileManager {
                         fos.close();
                         Log.d("ImageManager", "download ready in"
                                         + ((System.currentTimeMillis() - startTime) / 1000)
-                                        + " sec");
+                                        + " sec");	
  
                 } catch (IOException e) {
                         Log.d("ImageManager", "Error: " + e);
                 }
+                Log.d("FileManager", "Faili downloadimine aadressile: " +PATH);
  
         }
 }

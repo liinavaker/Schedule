@@ -44,18 +44,25 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.75"
+        android:layout_weight="0.5"
         android:text="Tudeng"
         android:textSize="8pt"
         />
         
-    <MultiAutoCompleteTextView
+<!--      <MultiAutoCompleteTextView
         android:id="@+id/spinner1"
         android:layout_width= "match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.25"
-        />
+        /> -->
 
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="downloadFile"
+        android:layout_weight="0.5"
+        android:text="Button" />
     
 	</LinearLayout>
 </LinearLayout>
