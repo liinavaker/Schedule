@@ -67,11 +67,20 @@ public class ScheduleViewerActivity extends Activity {
 					while (j.hasNext()) {
 						String kuupaev = j.next();
 						
-						JSONArray timetableJson = kuupaevad.getJSONArray(kuupaev);
-						for (int n = 0; n < timetableJson.length(); n++) {
-							JSONObject data = (JSONObject) timetableJson
+						JSONArray kattuvused = kuupaevad.getJSONArray(kuupaev);
+						for (int n = 0; n < kattuvused.length(); n++) {
+							JSONObject kellaajad = (JSONObject) kattuvused
 									.get(n);
-							Log.d("requestComplete", "startDate: " + data.toString());
+							
+							@SuppressWarnings("unchecked")
+							Iterator<String> k = kellaajad.keys();
+							while (k.hasNext()) {
+								String kellaaeg = k.next();
+								
+								JSONObject eventData = kellaajad.getJSONObject(kellaaeg);
+								
+								Log.d("requestComplete", "data: " + eventData.toString());
+							}
 						}
 					}
 				}
