@@ -50,49 +50,61 @@ public class ScheduleViewerActivity extends Activity {
 		// events.clear();
 		try {
 			JSONObject json = new JSONObject(result);
-			
+
 			@SuppressWarnings("unchecked")
 			Iterator<String> i = json.keys();
 			while (i.hasNext()) {
 				String paev = i.next();
-				
-				JSONArray timetableJson = new JSONArray(paev);
-				for (int j = 0; j < timetableJson.length(); j++) {
-					JSONObject tweetJson = (JSONObject) timetableJson.get(j);
-					String text = tweetJson.getString("startDate");
-					Log.d("requestComplete", "startDate: " +text);
+
+				// JSONis on tŸhjade pŠevade puhul tŸhi array [],
+				// kui pŠev pole tŸhi, siis on temaga seotud objekt {}
+				// Meid huvitab ainult see case, kus on objekt ehk JSONObject
+				JSONObject kuupaevad = json.optJSONObject(paev);
+				// Kui polnud JSONObject, siis saime nulli
+				if (null != kuupaevad) {
+					@SuppressWarnings("unchecked")
+					Iterator<String> j = kuupaevad.keys();
+					while (j.hasNext()) {
+						String kuupaev = j.next();
+						
+						JSONArray timetableJson = kuupaevad.getJSONArray(kuupaev);
+						for (int n = 0; n < timetableJson.length(); n++) {
+							JSONObject data = (JSONObject) timetableJson
+									.get(n);
+							Log.d("requestComplete", "startDate: " + data.toString());
+						}
+					}
 				}
-					
-					
-					//Event event = new Event();
-				// event.setStartDate(results.getJSONObject(i).getString("startDate"));
-
-				// String endDate = timetableJson.getString("endDate");
-				// String subject = timetableJson.getString("subject");
-				// String location = timetableJson.getString("location");
-				// String subjectID = timetableJson.getString("Ainekood");
-				// String lecturer =
-				// timetableJson.getString("\u00d5ppej\u00f5ud");
-				// String subjectType =
-				// timetableJson.getString("T\u00fc\u00fcp");
-				// String weekday = timetableJson.getString("weekday");
-
-				Log.d("requestComplete", "------------");
-
-				// Log.d("requestComplete", "endDate: " + endDate );
-				// Log.d("requestComplete", "subject: " + subject );
-				// Log.d("requestComplete", "location: " + location);
-
-				// event.setStartDate(endDate);
-				// event.setStartDate(subject);
-				// event.setStartDate(location);
-				// event.setStartDate(subjectID);
-				// event.setStartDate(lecturer);
-				// event.setStartDate(subjectType);
-				// event.setStartDate(weekday);
-				//events.add(event);
-
 			}
+
+			// Event event = new Event();
+			// event.setStartDate(results.getJSONObject(i).getString("startDate"));
+
+			// String endDate = timetableJson.getString("endDate");
+			// String subject = timetableJson.getString("subject");
+			// String location = timetableJson.getString("location");
+			// String subjectID = timetableJson.getString("Ainekood");
+			// String lecturer =
+			// timetableJson.getString("\u00d5ppej\u00f5ud");
+			// String subjectType =
+			// timetableJson.getString("T\u00fc\u00fcp");
+			// String weekday = timetableJson.getString("weekday");
+
+			Log.d("requestComplete", "------------");
+
+			// Log.d("requestComplete", "endDate: " + endDate );
+			// Log.d("requestComplete", "subject: " + subject );
+			// Log.d("requestComplete", "location: " + location);
+
+			// event.setStartDate(endDate);
+			// event.setStartDate(subject);
+			// event.setStartDate(location);
+			// event.setStartDate(subjectID);
+			// event.setStartDate(lecturer);
+			// event.setStartDate(subjectType);
+			// event.setStartDate(weekday);
+			// events.add(event);
+
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
