@@ -56,7 +56,9 @@
         android:id="@+id/IDEntryButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="0.25"
         android:action="onEnterID_clicked"
-        android:text="@string/enterStudent_ID" />
+        android:text="@string/enterStudent_ID"
+        android:textSize="8pt" />
 
 </LinearLayout>
