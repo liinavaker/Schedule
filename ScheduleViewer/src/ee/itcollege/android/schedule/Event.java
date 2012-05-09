@@ -10,6 +10,8 @@ public class Event {
 	private String location;
 	private String subjectID; //ainekood
 	private String lecturer;
+	private String timePeriod; //mis ajast mis ajani loeng toimub
+	private String frequency; //kui tihti loeng toimub: iga nädal/paaritutel/paaris nädalatel 
 	private String subjectType; //aine tüüp: loeng/praktikum/eksam jne
 
 
@@ -61,6 +63,18 @@ public class Event {
 	}
 	public void setSubjectType(String subjectType) {
 		this.subjectType = subjectType;
+	}
+	public String getTimePeriod() {
+		return timePeriod;
+	}
+	public void setTimePeriod(String timePeriod) {
+		this.timePeriod = timePeriod;
+	}
+	public String getFrequency() {
+		return frequency;
+	}
+	public void setFrequency(String frequency) {
+		this.frequency = frequency;
 	}
 		
 	
