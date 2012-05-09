@@ -8,7 +8,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,6 +51,7 @@ public class ScheduleViewerActivity extends Activity {
 
 	private void requestComplete(String result) {
 		// events.clear();
+		HashMap<String,String> HashMapEvent = new HashMap<String,String>();
 		try {
 			JSONObject json = new JSONObject(result);
 
@@ -76,10 +80,22 @@ public class ScheduleViewerActivity extends Activity {
 							Iterator<String> k = kellaajad.keys();
 							while (k.hasNext()) {
 								String kellaaeg = k.next();
-								
 								JSONObject eventData = kellaajad.getJSONObject(kellaaeg);
-								
+								JSONObject atributes = eventData.getJSONObject("atributes");
+								JSONObject description = eventData.getJSONObject("description");
+								Log.d("requestComplete", "atributes: " + atributes.toString());
 								Log.d("requestComplete", "data: " + eventData.toString());
+								Log.d("requestComplete", "------------");
+								Log.d("requestComplete", "startDate" +eventData.get("startDate"));
+								Log.d("requestComplete", "endDate" +eventData.get("endDate"));
+								Log.d("requestComplete", "atributes: weekday " + atributes.get("weekday"));
+								Log.d("requestComplete", "description: tŸŸp " + description.get("TŸŸp"));
+								Log.d("requestComplete", "location: " + eventData.get("location"));
+								Log.d("requestComplete", "description: ›ppej›ud " + description.get("Íppej›ud"));
+								Log.d("requestComplete", "description: periood " + description.get("Periood"));
+								Log.d("requestComplete", "description: sagedus " + description.get("Sagedus"));
+								Log.d("requestComplete", "subject: " + eventData.get("subject"));
+								Log.d("requestComplete", "------------");
 							}
 						}
 					}
