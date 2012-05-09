@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="hello">Hello World, ScheduleViewerActivity!</string>
     <string name="app_name">OIS Schedule Viewer</string>
-    <string name="LoremIpsum">Siia tuleb tunniplaan koos meelespeade optsioonidega</string>
-    <string name="schoolname">Eesti Infotehnoloogia Kolledži</string>
-    <string name="schedule">tunniplaan</string>
-    <string name="student">Tudeng</string>
-    <string name="enterStudent_ID">Sisesta ja jätka</string>
-    <string name="logoDescr">ÕIS logo (stiliseeritud lilleõis)</string>
-
+    <string name="LoremIpsum">Here there will be dragons!</string>
+    <string name="schoolname">The Estonian Information Technology College</string>
+    <string name="schedule">schedule</string>
+    <string name="student">Student</string>
+    <string name="enterStudent_ID">Enter and proceed</string>
+    <string name="logoDescr">SIS logo (stylized flower)</string>
 </resources>

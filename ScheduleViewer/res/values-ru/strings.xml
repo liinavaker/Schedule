@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, ScheduleViewerActivity!</string>
+    <string name="app_name">наблюдатель SIS-a</string>
+    <string name="LoremIpsum">Here there will be dragons!</string>
+    <string name="schoolname">The Estonian Information Technology College</string>
+    <string name="schedule">расписание</string>
+    <string name="student">студент, студентка</string>
+    <string name="enterStudent_ID">вход и продолжать</string>
+    <string name="logoDescr">логотип (Секретная разведывательная служба)</string>
+</resources>
