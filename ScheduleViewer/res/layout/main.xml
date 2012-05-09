@@ -5,7 +5,6 @@
     android:background="#6B6B6B"
     android:orientation="vertical"
     android:padding="10dip" >
-
     <ImageView
         android:id="@+id/logo"
         android:layout_width="wrap_content"
@@ -14,15 +13,14 @@
         android:contentDescription="@string/logoDescr"
         android:paddingTop="70dip"
         android:src="@drawable/ois" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
         android:paddingTop="20dip"
-        android:text="@string/schoolname"
+        android:text="@string/schoolName"
         android:textSize="9pt" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,35 +28,34 @@
         android:paddingTop="10dip"
         android:text="@string/schedule"
         android:textSize="9pt" />
-
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingTop="20dip"
         android:weightSum="1" >
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="3dip"
+            android:layout_marginLeft="3dip"
             android:layout_weight="0.75"
+            android:gravity="center_vertical"
             android:text="@string/student"
             android:textSize="8pt" />
-
         <MultiAutoCompleteTextView
             android:id="@+id/spinner1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginRight="2dip"
             android:layout_weight="0.25" />
     </LinearLayout>
-
     <Button
         android:id="@+id/IDEntryButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.25"
-        android:action="onEnterID_clicked"
+        android:layout_height="0dip"
+        android:layout_weight="0.5"
+        android:onClick="onEntryClicked"
         android:text="@string/enterStudent_ID"
         android:textSize="8pt" />
-
 </LinearLayout>

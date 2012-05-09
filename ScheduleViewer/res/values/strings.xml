@@ -3,7 +3,7 @@
     <string name="hello">Hello World, ScheduleViewerActivity!</string>
     <string name="app_name">OIS Schedule Viewer</string>
     <string name="LoremIpsum">Here there will be dragons!</string>
-    <string name="schoolname">The Estonian Information Technology College</string>
+    <string name="schoolName">The Estonian Information Technology College</string>
     <string name="schedule">schedule</string>
     <string name="student">Student</string>
     <string name="enterStudent_ID">Enter and proceed</string>

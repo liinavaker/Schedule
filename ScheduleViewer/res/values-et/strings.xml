@@ -3,7 +3,7 @@
     <string name="hello">Hello World, Tunniplaani vaataja</string>
     <string name="app_name">ÕIS Tunniplaani Jälgija</string>
     <string name="LoremIpsum">Siia tuleb tunniplaan koos meelespeade optsioonidega</string>
-    <string name="schoolname">Eesti Infotehnoloogia Kolledži</string>
+    <string name="schoolName">Eesti Infotehnoloogia Kolledži</string>
     <string name="schedule">tunniplaan</string>
     <string name="student">Tudeng</string>
     <string name="enterStudent_ID">Sisesta ja jätka</string>
