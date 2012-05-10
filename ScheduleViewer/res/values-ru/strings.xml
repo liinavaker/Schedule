@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, ScheduleViewerActivity!</string>
-    <string name="app_name">наблюдатель SIS-a</string>
-    <string name="LoremIpsum">Here there will be dragons!</string>
-    <string name="schoolName">The Estonian Information Technology College</string>
+    <string name="hello">Здравствуй Мир! Координатор расписания!</string>
+    <string name="app_name">Координатор расписания</string>
+    <string name="LoremIpsum">Здесь будет расписание с опциями памяток</string>
+    <string name="schoolName">Эстонский Колледж Инфотехнологии</string>
     <string name="schedule">расписание</string>
-    <string name="student">студент(ка)</string>
-    <string name="enterStudent_ID">ввод и продолжать</string>
-    <string name="logoDescr">логотип (Секретная разведывательная служба)</string>
+    <string name="student">Студент</string>
+    <string name="enterStudent_ID">введи и продолжи</string>
+    <string name="logoDescr">логотип (стилизованный цветок)</string>
 </resources>

@@ -4,28 +4,23 @@
     android:layout_height="match_parent"
     android:baselineAligned="false"
     android:orientation="horizontal" >
-
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/LoremIpsum" />
-
     <LinearLayout
         android:layout_width="0dip"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical" >
-
         <!--
-         Notice that widget sizes are expressed in dip, or device-independent
-         pixels, while text sizes are expressed in sip, or scale-independent
-         pixels, to factor in user-chosen font sizes.
+             Notice that widget sizes are expressed in dip, or device-independent 
+			pixels, while text sizes are expressed in sip, or scale-independent pixels, 
+			to factor in user-chosen font sizes.
         -->
-
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/LoremIpsum" />
+            android:text="@string/hello" />
     </LinearLayout>
-
 </LinearLayout>
