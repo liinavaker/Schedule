@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import org.json.JSONArray;
@@ -15,19 +16,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 
-import android.widget.EditText;
-import android.content.Context;
 /**
  * @author Heiki
  * 
@@ -62,15 +54,12 @@ public class ScheduleViewerActivity extends Activity {
      */
     static String userID = "2224"; //$NON-NLS-1$
 
-   
-    
-    @SuppressWarnings("unused")
-    private ArrayList<Event> events = new ArrayList<Event>();
+    private final ArrayList<Event> events = new ArrayList<Event>();
 
     /**
      * @author Liina
      * @param userID
-          */
+     */
     @SuppressWarnings({ "hiding", "nls" })
     public void getUserTimetable(String userID) {
 	Log.d("getUserTimetable", "UserID: " + userID);
@@ -81,82 +70,6 @@ public class ScheduleViewerActivity extends Activity {
 			    + URLEncoder.encode(userID));
 	    new GetUrlContents().execute(url);
 	} catch (MalformedURLException e) {
-	    e.printStackTrace();
-	}
-    }
-
-    @SuppressWarnings("static-method")
-    private void requestComplete(String result) {
-	// events.clear();
-	try {
-	    JSONObject json = new JSONObject(result);
-
-	    @SuppressWarnings("unchecked")
-	    Iterator<String> i = json.keys();
-	    while (i.hasNext()) {
-		String paev = i.next();
-
-		// JSONis on tyhjade p2evade puhul tyhi array [],
-		// kui p2ev pole tyhi, siis on temaga seotud objekt {}
-		// Meid huvitab ainult see case, kus on objekt ehk JSONObject
-		JSONObject kuupaevad = json.optJSONObject(paev);
-		// Kui polnud JSONObject, siis saime nulli
-		if (null != kuupaevad) {
-		    @SuppressWarnings("unchecked")
-		    Iterator<String> j = kuupaevad.keys();
-		    while (j.hasNext()) {
-			String kuupaev = j.next();
-
-			JSONArray kattuvused = kuupaevad.getJSONArray(kuupaev);
-			for (int n = 0; n < kattuvused.length(); n++) {
-			    JSONObject kellaajad = (JSONObject) kattuvused
-				    .get(n);
-
-			    @SuppressWarnings("unchecked")
-			    Iterator<String> k = kellaajad.keys();
-			    while (k.hasNext()) {
-				String kellaaeg = k.next();
-
-				JSONObject eventData = kellaajad
-					.getJSONObject(kellaaeg);
-
-				Log.d("requestComplete", //$NON-NLS-1$
-					"data: " + eventData.toString()); //$NON-NLS-1$
-			    }
-			}
-		    }
-		}
-	    }
-
-	    // Event event = new Event();
-	    // event.setStartDate(results.getJSONObject(i).getString("startDate"));
-
-	    // String endDate = timetableJson.getString("endDate");
-	    // String subject = timetableJson.getString("subject");
-	    // String location = timetableJson.getString("location");
-	    // String subjectID = timetableJson.getString("Ainekood");
-	    // String lecturer =
-	    // timetableJson.getString("\u00d5ppej\u00f5ud");
-	    // String subjectType =
-	    // timetableJson.getString("T\u00fc\u00fcp");
-	    // String weekday = timetableJson.getString("weekday");
-
-	    Log.d("requestComplete", "------------"); //$NON-NLS-1$ //$NON-NLS-2$
-
-	    // Log.d("requestComplete", "endDate: " + endDate );
-	    // Log.d("requestComplete", "subject: " + subject );
-	    // Log.d("requestComplete", "location: " + location);
-
-	    // event.setStartDate(endDate);
-	    // event.setStartDate(subject);
-	    // event.setStartDate(location);
-	    // event.setStartDate(subjectID);
-	    // event.setStartDate(lecturer);
-	    // event.setStartDate(subjectType);
-	    // event.setStartDate(weekday);
-	    // events.add(event);
-
-	} catch (JSONException e) {
 	    e.printStackTrace();
 	}
     }
@@ -193,6 +106,113 @@ public class ScheduleViewerActivity extends Activity {
 	    super.onPostExecute(result);
 	    Log.d("onPostExecute", "@result: " + result); //$NON-NLS-1$ //$NON-NLS-2$
 	    requestComplete(result);
+	}
+    }
+
+    @SuppressWarnings("nls")
+    private void requestComplete(String result) {
+	// events.clear();
+	@SuppressWarnings("unused")
+	HashMap<String, String> HashMapEvent = new HashMap<String, String>();
+	try {
+	    JSONObject json = new JSONObject(result);
+
+	    @SuppressWarnings("unchecked")
+	    Iterator<String> i = json.keys();
+	    while (i.hasNext()) {
+		String paev = i.next();
+
+		// JSONis on tyhjade paevade puhul tyhi array [],
+		// kui paev pole tyhi, siis on temaga seotud objekt {}
+		// Meid huvitab ainult see case, kus on objekt ehk JSONObject
+		JSONObject kuupaevad = json.optJSONObject(paev);
+		// Kui polnud JSONObject, siis saime nulli
+		if (null != kuupaevad) {
+		    @SuppressWarnings("unchecked")
+		    Iterator<String> j = kuupaevad.keys();
+		    while (j.hasNext()) {
+			String kuupaev = j.next();
+
+			JSONArray kattuvused = kuupaevad.getJSONArray(kuupaev);
+			for (int n = 0; n < kattuvused.length(); n++) {
+			    JSONObject kellaajad = (JSONObject) kattuvused
+				    .get(n);
+
+			    @SuppressWarnings("unchecked")
+			    Iterator<String> k = kellaajad.keys();
+			    while (k.hasNext()) {
+				Event event = new Event();
+				String kellaaeg = k.next();
+				JSONObject eventData = kellaajad
+					.getJSONObject(kellaaeg);
+
+				JSONObject atributes = eventData
+					.getJSONObject("atributes");
+				JSONObject description = eventData
+					.getJSONObject("description");
+
+				Log.d("requestComplete", "------------");
+
+				String startDate = eventData
+					.getString("startDate");
+				event.setStartDate(startDate);
+				Log.d("requestComplete", "startDate: "
+					+ startDate);
+
+				String endDate = eventData.getString("endDate");
+				event.setEndDate(endDate);
+				Log.d("requestComplete", "endDate: " + endDate);
+
+				String weekday = atributes.getString("weekday");
+				event.setWeekday(weekday);
+				Log.d("requestComplete", "weekday: " + weekday);
+
+				String subjectType = description
+					.getString("T��p");
+				event.setSubjectID(subjectType);
+				Log.d("requestComplete", "subjectType: "
+					+ subjectType);
+
+				String location = eventData
+					.getString("location");
+				event.setLocation(location);
+				Log.d("requestComplete", "location: "
+					+ location);
+
+				String lecturer = description
+					.getString("�ppej�ud");
+				event.setLecturer(lecturer);
+				Log.d("requestComplete", "lecturer: "
+					+ lecturer);
+				String timePeriod = description
+					.getString("Periood");
+				event.setTimePeriod(timePeriod);
+				Log.d("requestComplete", "timePeriod: "
+					+ timePeriod);
+
+				String frequency = description
+					.getString("Sagedus");
+				event.setFrequency(frequency);
+				Log.d("requestComplete", "frequency: "
+					+ frequency);
+
+				String subject = eventData.getString("subject");
+				event.setSubject(subject);
+				Log.d("requestComplete", "subject: " + subject);
+				Log.d("requestComplete", "------------");
+
+				this.events.add(event);
+
+				Log.d("requestComplete",
+					"events Array suurus: "
+						+ this.events.size());
+			    }
+			}
+		    }
+		}
+	    }
+	} catch (JSONException e) {
+	    e.printStackTrace();
 	}
     }
 

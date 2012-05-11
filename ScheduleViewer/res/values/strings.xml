@@ -9,4 +9,5 @@
     <string name="student">Student</string>
     <string name="enterStudent_ID">Enter and proceed</string>
     <string name="logoDescr">SIS logo (stylized flower)</string>
+    <string name="ID_number">Enter your SIS \'&amp;student_id=\' number here</string>
 </resources>

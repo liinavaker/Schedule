@@ -9,4 +9,5 @@
     <string name="student">Студент</string>
     <string name="enterStudent_ID">введи и продолжи</string>
     <string name="logoDescr">логотип ИНФОРМАЦИОННОЙ УЧЕБНОЙ СИСТЕМЫ (стилизованный цветок)</string>
+    <string name="ID_number">Enter your SIS \'&amp;student_id=\' number here</string>
 </resources>

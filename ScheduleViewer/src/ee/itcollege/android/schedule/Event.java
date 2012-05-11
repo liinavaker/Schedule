@@ -1,10 +1,10 @@
 package ee.itcollege.android.schedule;
 
-
 /**
  * @author Liina
- *
+ * 
  */
+@SuppressWarnings({ "javadoc" })
 public class Event {
 
     private String weekday;
@@ -14,7 +14,11 @@ public class Event {
     private String location;
     private String subjectID; // ainekood
     private String lecturer;
-    private String subjectType; // aine t��p: loeng/praktikum/eksam jne.
+    private String timePeriod; // mis ajast mis ajani loeng toimub
+    private String frequency; // kui tihti loeng toimub: iga
+			      // nadal/paaritutel/paaris nadalatel
+
+    private String subjectType; // aine tyyp: loeng/praktikum/eksam jne
 
     public String getWeekday() {
 	return this.weekday;
@@ -75,5 +79,21 @@ public class Event {
     public String getSubjectType() {
 	return this.subjectType;
 
+    }
+
+    public String getTimePeriod() {
+	return this.timePeriod;
+    }
+
+    public void setTimePeriod(String timePeriod) {
+	this.timePeriod = timePeriod;
+    }
+
+    public String getFrequency() {
+	return this.frequency;
+    }
+
+    public void setFrequency(String frequency) {
+	this.frequency = frequency;
     }
 }
