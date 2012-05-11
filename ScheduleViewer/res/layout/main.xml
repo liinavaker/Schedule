@@ -29,6 +29,7 @@
         android:text="@string/schedule"
         android:textSize="9pt" />
     <LinearLayout
+        android:id="IDEntryBox"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -44,7 +45,7 @@
             android:text="@string/student"
             android:textSize="8pt" />
         <EditText
-            android:id="@+id/ID_Entry"
+            android:id="@+id/IdEntry"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="2dip"

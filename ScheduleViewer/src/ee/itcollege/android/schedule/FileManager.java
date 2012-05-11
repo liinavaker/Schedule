@@ -10,10 +10,6 @@ import java.net.URLConnection;
 
 import org.apache.http.util.ByteArrayBuffer;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.os.Environment;
 import android.util.Log;
 
@@ -21,7 +17,6 @@ import android.util.Log;
  * @author Liina
  * 
  */
-@SuppressWarnings("unused")
 public class FileManager {
 
     @SuppressWarnings("nls")
@@ -73,18 +68,4 @@ public class FileManager {
 
     }
 
-    /**
-     * @author Heiki
-     * @param studentID
-     * @return complete URL
-     */
-    @SuppressWarnings("nls")
-    public static String onEnterID_clicked(String studentID) {
-	String ID = studentID.toString(); // TODO: add try parse in case user
-					  // enters something else instead on
-					  // numerical ID
-	String URI = ("https://itcollege.ois.ee/et/schedule?&format=json&student_id=" + ID);
-	// creating hardwired JSON data URL. not nice.
-	return URI;
-    }
 }

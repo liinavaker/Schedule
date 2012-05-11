@@ -26,20 +26,20 @@ import android.util.Log;
  */
 public class ScheduleViewerActivity extends Activity {
 
-    /**
-     * Called when the activity is first created.
-     * 
-     * @param savedInstanceState
-     * @param URI
-     */
-    public void onCreate(Bundle savedInstanceState, String URI) {
-	super.onCreate(savedInstanceState);
-	setContentView(R.layout.main);
-	new FileManager()
-		.DownloadFromUrl(
-			"https://itcollege.ois.ee/et/schedule?&format=json&student_id=1679", "failinimi"); //$NON-NLS-1$ //$NON-NLS-2$
-
-    }
+    // /**
+    // * Called when the activity is first created.
+    // *
+    // * @param savedInstanceState
+    // * @param URI
+    // */
+    // public void onCreate(Bundle savedInstanceState, String URI) {
+    // super.onCreate(savedInstanceState);
+    // setContentView(R.layout.main);
+    // new FileManager()
+    // .DownloadFromUrl(
+    //			"https://itcollege.ois.ee/et/schedule?&format=json&student_id=1679", "failinimi"); //$NON-NLS-1$ //$NON-NLS-2$
+    //
+    // }
 
     /** Called when the activity is first created. */
     @Override
@@ -52,7 +52,23 @@ public class ScheduleViewerActivity extends Activity {
     /**
      * main differential
      */
-    static String userID = "2224"; //$NON-NLS-1$
+    static String userID = "2224"; //$NON-NLS-1$ NB! global variable
+
+    /**
+     * @author Heiki
+     * @description an alternative method to make an URL
+     */
+    static String meetodMidaTahadVäljaKutsuda(String numericalStudentIDstring) {
+	Object studentID = numericalStudentIDstring;
+	String ID = studentID.toString(); // TODO: add try parse in case user
+					  // enters something else instead on
+					  // numerical ID
+	String URI = ("https://itcollege.ois.ee/et/schedule?&format=json&student_id=" + ID); //$NON-NLS-1$
+	// creating hardwired JSON data URL. not nice.
+	return URI;
+	// TODO Auto-generated method stub
+
+    }
 
     private final ArrayList<Event> events = new ArrayList<Event>();
 
