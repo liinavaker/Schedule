@@ -7,7 +7,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 
 import org.json.JSONArray;
@@ -22,11 +26,34 @@ import android.util.Log;
 public class EventListFragment extends ListFragment {
 	private ArrayList<Event> events = new ArrayList<Event>();
 
-	public static String userID = "2224";
-	
+	public static String userID = "1679";
+	// public int aasta;
+	// public int kuu;
+	// public int kuupaev;
+	public int paev1;
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
+
+		// Mis päev täna on?
+		Calendar cal = Calendar.getInstance();
+		// aasta = cal.get(Calendar.YEAR);
+		// kuu = cal.get(Calendar.MONTH);
+		// kuupaev = cal.get(Calendar.DATE);
+
+		paev1 = cal.get(Calendar.DAY_OF_WEEK);
+		
+	//	// teisendan ümber formaadiks, kus nädal algab esmaspäevaga
+		if (paev1 == 1) {
+			paev1 = 7;
+		} else 
+			paev1 = paev1 -1;
+
+		// Log.d("EventListFragment", "year: " + aasta);
+		// Log.d("EventListFragment", "kuu: " + kuu);
+		// Log.d("EventListFragment", "kuupaev: " + kuupaev);
+
 		getSearchResults(userID);
 	}
 
@@ -73,7 +100,6 @@ public class EventListFragment extends ListFragment {
 							@SuppressWarnings("unchecked")
 							Iterator<String> k = kellaajad.keys();
 							while (k.hasNext()) {
-								Event event = new Event();
 								String kellaaeg = k.next();
 								JSONObject eventData = kellaajad
 										.getJSONObject(kellaaeg);
@@ -84,68 +110,73 @@ public class EventListFragment extends ListFragment {
 
 								Log.d("requestComplete", "------------");
 
-								String startDate = eventData
-										.getString("startDate");
-								event.setStartDate(startDate);
-								Log.d("requestComplete", "startDate: "
-										+ startDate);
-
-								String endDate = eventData.getString("endDate");
-								event.setEndDate(endDate);
-								Log.d("requestComplete", "endDate: " + endDate);
-								
-								String Date = description.getString("Aeg");
-								event.setDate(Date);
-								Log.d("requestComplete", "Date: " + Date);
-
 								String weekday = atributes.getString("weekday");
-								event.setWeekday(weekday);
-								Log.d("requestComplete", "weekday: " + weekday);
-
-								String subjectType = description
-										.getString("Tüüp");
-								event.setSubjectType(subjectType);
-								Log.d("requestComplete", "subjectType: "
-										+ subjectType);
-
-								String location = eventData
-										.getString("location");
-								event.setLocation(location);
-								Log.d("requestComplete", "location: "
-										+ location);
-
-								String lecturer = description
-										.getString("Õppejõud");
-								event.setLecturer(lecturer);
-								Log.d("requestComplete", "lecturer: "
-										+ lecturer);
-
 								
-								//String timePeriod = description
-								//		.getString("Periood");
-								//event.setTimePeriod(timePeriod);
-								//Log.d("requestComplete", "timePeriod: "
-								//		+ timePeriod);
+								if (weekday.equals(Integer.toString(paev1))) {
+									Event event = new Event();
+									event.setWeekday(weekday);
+									Log.d("requestComplete", "weekday: " + weekday);
+										
+									String startDate = eventData
+											.getString("startDate");
+									event.setStartDate(startDate);
+									Log.d("requestComplete", "startDate: "
+											+ startDate);
 
-								String frequency = description
-										.getString("Sagedus");
-								event.setFrequency(frequency);
-								Log.d("requestComplete", "frequency: "
-										+ frequency);
+									String endDate = eventData.getString("endDate");
+									event.setEndDate(endDate);
+									Log.d("requestComplete", "endDate: " + endDate);
 
-								String subject = eventData.getString("subject");
-								event.setSubject(subject);
-								Log.d("requestComplete", "subject: " + subject);
+									String Date = description.getString("Aeg");
+									event.setDate(Date);
+									Log.d("requestComplete", "Date: " + Date);
 
-								Log.d("requestComplete", "------------");
+									String subjectType = description
+											.getString("Tüüp");
+									event.setSubjectType(subjectType);
+									Log.d("requestComplete", "subjectType: "
+											+ subjectType);
 
-								events.add(event);
+									String location = eventData
+											.getString("location");
+									event.setLocation(location);
+									Log.d("requestComplete", "location: "
+											+ location);
 
-								// kontrollin, kas events array-sse on
-								// lisandunud uus event.
-								Log.d("requestComplete",
-										"events Array suurus: " + events.size());
-							}
+									String lecturer = description
+											.getString("Õppejõud");
+									event.setLecturer(lecturer);
+									Log.d("requestComplete", "lecturer: "
+											+ lecturer);
+
+									// String timePeriod = description
+									// .getString("Periood");
+									// event.setTimePeriod(timePeriod);
+									// Log.d("requestComplete", "timePeriod: "
+									// + timePeriod);
+
+									String frequency = description
+											.getString("Sagedus");
+									event.setFrequency(frequency);
+									Log.d("requestComplete", "frequency: "
+											+ frequency);
+
+									String subject = eventData.getString("subject");
+									event.setSubject(subject);
+									Log.d("requestComplete", "subject: " + subject);
+
+									Log.d("requestComplete", "------------");
+
+									events.add(event);
+
+									// kontrollin, kas events array-sse on
+									// lisandunud uus event.
+									Log.d("requestComplete",
+											"events Array suurus: " + events.size());
+
+								}
+								
+															}
 						}
 					}
 				}

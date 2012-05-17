@@ -41,14 +41,12 @@ public class EventAdapter extends BaseAdapter {
 		TextView date = (TextView) view.findViewById(R.id.event_date);
 		TextView details = (TextView) view.findViewById(R.id.event_details);
 		TextView location = (TextView) view.findViewById(R.id.event_location);
-
 		
 		Event event = events.get(position);
 		name.setText(event.getSubject());
 		date.setText(event.getDate());
 		details.setText(event.getLecturer());
 		location.setText(event.getLocation());
-
 		
 		return view;
 	}
