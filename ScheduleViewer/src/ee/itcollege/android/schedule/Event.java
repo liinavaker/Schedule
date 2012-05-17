@@ -14,7 +14,6 @@ public class Event {
 	private String frequency; //kui tihti loeng toimub: iga nädal/paaritutel/paaris nädalatel 
 	private String subjectType; //aine tüüp: loeng/praktikum/eksam jne
 
-	
 	public String getWeekday() {
 		return weekday;
 	}
