@@ -2,62 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#6B6B6B"
     android:orientation="vertical"
-    android:padding="10dip" >
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:contentDescription="@string/logoDescr"
-        android:paddingTop="70dip"
-        android:src="@drawable/ois" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:paddingTop="20dip"
-        android:text="@string/schoolName"
-        android:textSize="9pt" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingTop="10dip"
-        android:text="@string/schedule"
-        android:textSize="9pt" />
-    <LinearLayout
-        android:id="IDEntryBox"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="20dip"
-        android:weightSum="1" >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="3dip"
-            android:layout_marginLeft="4dip"
-            android:layout_weight="0.75"
-            android:gravity="center_vertical"
-            android:text="@string/student"
-            android:textSize="8pt" />
-        <EditText
-            android:id="@+id/IdEntry"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="2dip"
-            android:layout_weight="0.25"
-            android:hint="@string/ID_number" />
-    </LinearLayout>
-    <Button
-        android:id="@+id/IDEntryButton"
+    android:padding="10dip">
+    
+    <fragment android:name="ee.itcollege.android.schedule.EventListFragment"
+        android:id="@+id/fragment_event_list"
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="0.5"
-        android:onClick="onEntryClicked"
-        android:text="@string/enterStudent_ID"
-        android:textSize="8pt" />
+        android:layout_height="match_parent" />
+
 </LinearLayout>

@@ -17,11 +17,7 @@ import android.widget.TextView;
  * 
  */
 public class GetUserID {
-
-    /**
-     * @author Heiki
-     * @param studentID
-     */
+/*
     @SuppressWarnings("nls")
     public static void onEnterID_clicked(String studentID) {
 	EditText userInput = (EditText) findViewById(R.id.IDEntryBox);
@@ -40,7 +36,7 @@ public class GetUserID {
 	}
 
 	// create URI from user input
-	ScheduleViewerActivity.meetodMidaTahadVäljaKutsuda(userInput.getText()
+	ScheduleViewerActivity.meetodMidaTahadValjaKutsuda(userInput.getText()
 		.toString());
 
 	// replaces hardwired student ID with user entered ID number from OIS
@@ -59,5 +55,5 @@ public class GetUserID {
 	alertDialog.show();
 
     }
-
+*/
 }
