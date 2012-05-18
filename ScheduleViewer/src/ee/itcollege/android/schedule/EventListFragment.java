@@ -88,13 +88,48 @@ public class EventListFragment extends ListFragment {
 		
 
 		int testday = getDayOfWeekFromDatetoString(showtext_current);
+		String previousDay = getPreviousDate(showtext_current).toString();
+		String nextDay = getNextDate(showtext_current).toString();
 		Log.d("EventListFragment", "*****");
 		Log.d("EventListFragment", "dayOfWeek today: " + testday);
+		Log.d("EventListFragment", "*****");
+		Log.d("EventListFragment", "nextDay: " +nextDay);
+		Log.d("EventListFragment", "*****");
+		Log.d("EventListFragment", "previoustDay: " +previousDay);
 		Log.d("EventListFragment", "*****");
 		// Tükeldan Date-tüüpi kuupäeva (yyyy-mm-dd) ära eraldi kolmeks
 		// stringiks.
 		dayOfWeek = testday;
+		
 			getSearchResults(userID);
+	}
+
+	public static Date getPreviousDate(String currentDate) {
+		String[] tokens = currentDate.split("-");
+		int yyyy = Integer.parseInt(tokens[0]);
+		String mm = tokens[1];
+		int dd = Integer.parseInt(tokens[2]);
+
+		Calendar cal = new GregorianCalendar(yyyy, Integer.parseInt(mm)-1, dd);
+		cal.add(Calendar.DATE, -1);
+		// Make an SQL Date out of that
+		java.sql.Date previousDate = new java.sql.Date(cal.getTimeInMillis());
+		Log.d("EventListFragment", "getDate tulemus: " +previousDate);
+		return previousDate;
+	}
+	
+	public static Date getNextDate(String currentDate) {
+		String[] tokens = currentDate.split("-");
+		int yyyy = Integer.parseInt(tokens[0]);
+		String mm = tokens[1];
+		int dd = Integer.parseInt(tokens[2]);
+
+		Calendar cal = new GregorianCalendar(yyyy, Integer.parseInt(mm)-1, dd);
+		cal.add(Calendar.DATE, +1);
+		// Make an SQL Date out of that
+		java.sql.Date nextDate = new java.sql.Date(cal.getTimeInMillis());
+		Log.d("EventListFragment", "getDate tulemus: " +nextDate);
+		return nextDate;
 	}
 
 	public static Date getDate(int vahe) {
