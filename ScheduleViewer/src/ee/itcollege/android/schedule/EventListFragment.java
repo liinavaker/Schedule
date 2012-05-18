@@ -43,12 +43,11 @@ public class EventListFragment extends ListFragment {
 		// Get today as a Calendar  
 		Calendar today = Calendar.getInstance();  
 		// Subtract 1 day  
-		today.add(Calendar.DATE, -1);  
+		today.add(Calendar.DATE, 0);  
 		// Make an SQL Date out of that  
 		java.sql.Date yesterday = new java.sql.Date(today.getTimeInMillis()); 
 		
 		Log.d("EventListFragment", "yesterday: " +yesterday);
-		
 		
 		
 		// Mis päev täna on?
