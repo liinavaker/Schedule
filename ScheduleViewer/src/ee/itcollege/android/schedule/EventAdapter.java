@@ -2,7 +2,6 @@ package ee.itcollege.android.schedule;
 
 import java.util.List;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -33,7 +32,6 @@ public class EventAdapter extends BaseAdapter {
 	public long getItemId(int position) {
 		return position;
 	}
-
 
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View view = View.inflate(context, R.layout.event, null);

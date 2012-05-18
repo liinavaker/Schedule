@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,7 +36,21 @@ public class EventListFragment extends ListFragment {
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-
+		
+		
+		
+		// Mis kuupäev oli eile? formaat yyyy-mm-dd
+		// Get today as a Calendar  
+		Calendar today = Calendar.getInstance();  
+		// Subtract 1 day  
+		today.add(Calendar.DATE, -1);  
+		// Make an SQL Date out of that  
+		java.sql.Date yesterday = new java.sql.Date(today.getTimeInMillis()); 
+		
+		Log.d("EventListFragment", "yesterday: " +yesterday);
+		
+		
+		
 		// Mis päev täna on?
 		Calendar cal = Calendar.getInstance();
 		// aasta = cal.get(Calendar.YEAR);
@@ -108,13 +123,14 @@ public class EventListFragment extends ListFragment {
 								JSONObject description = eventData
 										.getJSONObject("description");
 
-								Log.d("requestComplete", "------------");
 
 								String weekday = atributes.getString("weekday");
 								
 								if (weekday.equals(Integer.toString(paev1))) {
 									Event event = new Event();
 									event.setWeekday(weekday);
+									
+									Log.d("requestComplete", "------------");
 									Log.d("requestComplete", "weekday: " + weekday);
 										
 									String startDate = eventData

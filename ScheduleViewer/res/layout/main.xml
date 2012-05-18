@@ -5,6 +5,13 @@
     android:orientation="vertical"
     android:padding="10dip">
     
+    <TextView
+        android:id="@+id/today"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textColor="#4099FF" />
+    
     <fragment android:name="ee.itcollege.android.schedule.EventListFragment"
         android:id="@+id/fragment_event_list"
         android:layout_width="match_parent"

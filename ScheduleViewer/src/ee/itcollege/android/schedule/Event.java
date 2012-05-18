@@ -5,7 +5,7 @@ public class Event {
 	private String weekday;	
 	private String startDate;
 	private String endDate;
-	private String Date; // "Aeg"
+	private String date; // "Aeg"
 	private String subject; //aine-loeng
 	private String location;
 	private String subjectID; //ainekood
@@ -75,9 +75,9 @@ public class Event {
 		this.frequency = frequency;
 	}
 	public String getDate() {
-		return Date;
+		return date;
 	}
 	public void setDate(String date) {
-		Date = date;
+		this.date = date;
 	}
 }
