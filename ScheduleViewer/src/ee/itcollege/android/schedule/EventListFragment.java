@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 
 import org.json.JSONArray;
@@ -31,44 +32,79 @@ public class EventListFragment extends ListFragment {
 	// public int aasta;
 	// public int kuu;
 	// public int kuupaev;
-	public int paev1;
+	public static String showtext_current;
+	public static String showtext_previous;
+	public static String showtext_next;
+	public int dayOfWeek; //valitud kuupäeva nädalapäev. Nt 2012-05-18 -> 5 (ehk reede)
 
+	
+	public int getWeekdayOfToday(){
+		// tänane nädalapäev numbrites
+		Calendar cal = Calendar.getInstance();
+		int today = cal.get(Calendar.DAY_OF_WEEK);
+		
+		if (today == 0) {
+			today = 7;
+		} else 
+			today = today -1;
+		
+		return today; 
+	}
+	
+	
+	public int getDayOfWeekFromDatetoString(String date) {
+		
+		// Tükeldan Date-tüüpi kuupäeva (yyyy-mm-dd) ära eraldi kolmeks
+		// stringiks.
+		String[] tokens = date.split("-");
+		int yyyy = Integer.parseInt(tokens[0]);
+		String mm = tokens[1];
+		int dd = Integer.parseInt(tokens[2]);
+
+		Log.d("EventListFragment", "yyyy" + yyyy);
+		Log.d("EventListFragment", "mm" + mm);
+		Log.d("EventListFragment", "dd" + dd);
+
+		// kuna January = 0 ja Monday = 0, siis tuleb tulemusest 1 lahutada
+		// Tahan saada teada, mis nädalapäev(weekday) mingi kuupäev (Date) on.
+		Calendar calendar = new GregorianCalendar(yyyy, Integer.parseInt(mm)-1, dd);
+		int day;
+		day = calendar.get(Calendar.DAY_OF_WEEK);
+
+		if (day == 0) {
+			day = 7;
+		} else 
+			day = day - 1; 
+
+		Log.d("EventListFragment", "dayOfWeek: " +day);
+		
+		return day;
+	}
+	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
+
 		
-		
-		
-		// Mis kuupäev oli eile? formaat yyyy-mm-dd
-		// Get today as a Calendar  
-		Calendar today = Calendar.getInstance();  
-		// Subtract 1 day  
-		today.add(Calendar.DATE, 0);  
-		// Make an SQL Date out of that  
-		java.sql.Date yesterday = new java.sql.Date(today.getTimeInMillis()); 
-		
-		Log.d("EventListFragment", "yesterday: " +yesterday);
-		
-		
-		// Mis päev täna on?
+
+		int testday = getDayOfWeekFromDatetoString(showtext_current);
+		Log.d("EventListFragment", "*****");
+		Log.d("EventListFragment", "dayOfWeek today: " + testday);
+		Log.d("EventListFragment", "*****");
+		// Tükeldan Date-tüüpi kuupäeva (yyyy-mm-dd) ära eraldi kolmeks
+		// stringiks.
+		dayOfWeek = testday;
+			getSearchResults(userID);
+	}
+
+	public static Date getDate(int vahe) {
+		// Get today as a Calendar
 		Calendar cal = Calendar.getInstance();
-		// aasta = cal.get(Calendar.YEAR);
-		// kuu = cal.get(Calendar.MONTH);
-		// kuupaev = cal.get(Calendar.DATE);
-
-		paev1 = cal.get(Calendar.DAY_OF_WEEK);
-		
-	//	// teisendan ümber formaadiks, kus nädal algab esmaspäevaga
-		if (paev1 == 1) {
-			paev1 = 7;
-		} else 
-			paev1 = paev1 -1;
-
-		// Log.d("EventListFragment", "year: " + aasta);
-		// Log.d("EventListFragment", "kuu: " + kuu);
-		// Log.d("EventListFragment", "kuupaev: " + kuupaev);
-
-		getSearchResults(userID);
+		cal.add(Calendar.DATE, vahe);
+		// Make an SQL Date out of that
+		java.sql.Date date = new java.sql.Date(cal.getTimeInMillis());
+		Log.d("EventListFragment", "getDate tulemus: " +date);
+		return date;
 	}
 
 	public void getSearchResults(String userID) {
@@ -122,25 +158,28 @@ public class EventListFragment extends ListFragment {
 								JSONObject description = eventData
 										.getJSONObject("description");
 
-
 								String weekday = atributes.getString("weekday");
-								
-								if (weekday.equals(Integer.toString(paev1))) {
+								Log.d("EventListFragment", "weekday: " +weekday);
+								Log.d("EventListFragment", "dayOfWeek: " +dayOfWeek);	
+								if (weekday.equals(Integer.toString(dayOfWeek))) {
 									Event event = new Event();
 									event.setWeekday(weekday);
-									
+
 									Log.d("requestComplete", "------------");
-									Log.d("requestComplete", "weekday: " + weekday);
-										
+									Log.d("requestComplete", "weekday: "
+											+ weekday);
+
 									String startDate = eventData
 											.getString("startDate");
 									event.setStartDate(startDate);
 									Log.d("requestComplete", "startDate: "
 											+ startDate);
 
-									String endDate = eventData.getString("endDate");
+									String endDate = eventData
+											.getString("endDate");
 									event.setEndDate(endDate);
-									Log.d("requestComplete", "endDate: " + endDate);
+									Log.d("requestComplete", "endDate: "
+											+ endDate);
 
 									String Date = description.getString("Aeg");
 									event.setDate(Date);
@@ -176,9 +215,11 @@ public class EventListFragment extends ListFragment {
 									Log.d("requestComplete", "frequency: "
 											+ frequency);
 
-									String subject = eventData.getString("subject");
+									String subject = eventData
+											.getString("subject");
 									event.setSubject(subject);
-									Log.d("requestComplete", "subject: " + subject);
+									Log.d("requestComplete", "subject: "
+											+ subject);
 
 									Log.d("requestComplete", "------------");
 
@@ -187,11 +228,12 @@ public class EventListFragment extends ListFragment {
 									// kontrollin, kas events array-sse on
 									// lisandunud uus event.
 									Log.d("requestComplete",
-											"events Array suurus: " + events.size());
+											"events Array suurus: "
+													+ events.size());
 
 								}
-								
-															}
+
+							}
 						}
 					}
 				}
