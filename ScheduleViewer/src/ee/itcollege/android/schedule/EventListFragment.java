@@ -13,6 +13,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -25,7 +27,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v4.app.ListFragment;
@@ -33,6 +34,7 @@ import android.util.Log;
 
 public class EventListFragment extends ListFragment {
 	private static ArrayList<Event> events = new ArrayList<Event>();
+	private static ArrayList<Event> events_sorted = new ArrayList<Event>();
 
 	public static String userID = "1679";
 	// public int aasta;
@@ -41,25 +43,26 @@ public class EventListFragment extends ListFragment {
 	public static String showtext_current;
 	public static String showtext_previous;
 	public static String showtext_next;
-	public static int dayOfWeek; //valitud kuupäeva nädalapäev. Nt 2012-05-18 -> 5 (ehk reede)
+	public static int dayOfWeek; // valitud kuupäeva nädalapäev. Nt 2012-05-18
+									// -> 5 (ehk reede)
 	public static Activity activity;
 	public static Context context = ScheduleViewerActivity.context;
-	
-	public int getWeekdayOfToday(){
+
+	public int getWeekdayOfToday() {
 		// tänane nädalapäev numbrites
 		Calendar cal = Calendar.getInstance();
 		int today = cal.get(Calendar.DAY_OF_WEEK);
-		
+
 		if (today == 0) {
 			today = 7;
-		} else 
-			today = today -1;
-		
-		return today; 
+		} else
+			today = today - 1;
+
+		return today;
 	}
-	
+
 	public int getDayOfWeekFromDatetoString(String date) {
-		
+
 		// Tükeldan Date-tüüpi kuupäeva (yyyy-mm-dd) ära eraldi kolmeks
 		// stringiks.
 		String[] tokens = date.split("-");
@@ -73,25 +76,25 @@ public class EventListFragment extends ListFragment {
 
 		// kuna January = 0 ja Monday = 0, siis tuleb tulemusest 1 lahutada
 		// Tahan saada teada, mis nädalapäev(weekday) mingi kuupäev (Date) on.
-		Calendar calendar = new GregorianCalendar(yyyy, Integer.parseInt(mm)-1, dd);
+		Calendar calendar = new GregorianCalendar(yyyy,
+				Integer.parseInt(mm) - 1, dd);
 		int day;
 		day = calendar.get(Calendar.DAY_OF_WEEK);
 
 		if (day == 0) {
 			day = 7;
-		} else 
-			day = day - 1; 
+		} else
+			day = day - 1;
 
-		Log.d("EventListFragment", "dayOfWeek: " +day);
-		
+		Log.d("EventListFragment", "dayOfWeek: " + day);
+
 		return day;
 	}
-	
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		
-		
+
 		int testday = getDayOfWeekFromDatetoString(showtext_current);
 
 		Log.d("EventListFragment", "*****");
@@ -100,7 +103,7 @@ public class EventListFragment extends ListFragment {
 		// Tükeldan Date-tüüpi kuupäeva (yyyy-mm-dd) ära eraldi kolmeks
 		// stringiks.
 		dayOfWeek = testday;
-			getSearchResults();
+		getSearchResults();
 	}
 
 	public static void getPreviousDateSchedule() {
@@ -110,15 +113,14 @@ public class EventListFragment extends ListFragment {
 		String mm = tokens[1];
 		int dd = Integer.parseInt(tokens[2]);
 
-		Calendar cal = new GregorianCalendar(yyyy, Integer.parseInt(mm)-1, dd);
+		Calendar cal = new GregorianCalendar(yyyy, Integer.parseInt(mm) - 1, dd);
 		cal.add(Calendar.DATE, -1);
 		// Make an SQL Date out of that
 		java.sql.Date previousDate = new java.sql.Date(cal.getTimeInMillis());
-		Log.d("EventListFragment", "getDate tulemus: " +previousDate);
+		Log.d("EventListFragment", "getDate tulemus: " + previousDate);
 		showtext_current = previousDate.toString();
 	}
-	
-	
+
 	public static void getNextDateSchedule() {
 		String currentDate = showtext_current;
 		String[] tokens = currentDate.split("-");
@@ -126,11 +128,11 @@ public class EventListFragment extends ListFragment {
 		String mm = tokens[1];
 		int dd = Integer.parseInt(tokens[2]);
 
-		Calendar cal = new GregorianCalendar(yyyy, Integer.parseInt(mm)-1, dd);
+		Calendar cal = new GregorianCalendar(yyyy, Integer.parseInt(mm) - 1, dd);
 		cal.add(Calendar.DATE, +1);
 		// Make an SQL Date out of that
 		java.sql.Date nextDate = new java.sql.Date(cal.getTimeInMillis());
-		Log.d("EventListFragment", "getDate tulemus: " +nextDate);
+		Log.d("EventListFragment", "getDate tulemus: " + nextDate);
 		showtext_current = nextDate.toString();
 	}
 
@@ -140,33 +142,33 @@ public class EventListFragment extends ListFragment {
 		cal.add(Calendar.DATE, vahe);
 		// Make an SQL Date out of that
 		java.sql.Date date = new java.sql.Date(cal.getTimeInMillis());
-		Log.d("EventListFragment", "getDate tulemus: " +date);
+		Log.d("EventListFragment", "getDate tulemus: " + date);
 		return date;
 	}
-	
+
 	private String fileName() {
 		// 1234_2012-05-19.json
 		return userID + "_ " + showtext_current + ".json";
 	}
-	
+
 	private boolean fileExists() {
-		File sdcard = Environment.getExternalStorageDirectory();	
+		File sdcard = Environment.getExternalStorageDirectory();
 		File dir = new File(sdcard.getAbsolutePath() + "/Schedule");
 		File file = new File(dir, filename());
 		return file.exists();
 	}
-	
+
 	private String filename() {
 		return userID + "_" + showtext_current + ".json";
 	}
-	
+
 	private void writeToSDCard(String result) throws IOException {
 		Log.d("EventListFragment", "writeToSDCard: result: " + result);
-		File sdcard = Environment.getExternalStorageDirectory();	
-		File dir = new File (sdcard.getAbsolutePath() + "/Schedule");
+		File sdcard = Environment.getExternalStorageDirectory();
+		File dir = new File(sdcard.getAbsolutePath() + "/Schedule");
 		dir.mkdirs();
-		
-		//Get the text file
+
+		// Get the text file
 		File file = new File(dir, filename());
 		BufferedWriter br = null;
 		try {
@@ -174,66 +176,65 @@ public class EventListFragment extends ListFragment {
 			br.write(result);
 			br.flush();
 		} finally {
-			if (null != br) br.close();
+			if (null != br)
+				br.close();
 		}
 	}
-	
+
 	private String readFile() {
-		File sdcard = Environment.getExternalStorageDirectory();	
-		File dir = new File (sdcard.getAbsolutePath() + "/Schedule");
+		File sdcard = Environment.getExternalStorageDirectory();
+		File dir = new File(sdcard.getAbsolutePath() + "/Schedule");
 		File file = new File(dir, filename());
 		try {
-		    BufferedReader br = new BufferedReader(new FileReader(file));
-		    return br.readLine();
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			return br.readLine();
+		} catch (IOException e) {
+			Log.d("EventListFragment", "readFile: " + e);
 		}
-		catch (IOException e) {
-		    Log.d("EventListFragment", "readFile: " +e);
-		}
-		
+
 		return null;
 	}
 
 	public void getSearchResults() {
-		if (! fileExists()) {
+		if (!fileExists()) {
 			downloadFile();
 		} else {
 			String result = readFile();
 			showEventsFromJSON(result);
 		}
 	}
-	
+
 	public static void showAlert() {
 		AlertDialog dialog = new AlertDialog.Builder(context).create();
-		  dialog.setTitle("Cannot connect to Schedule");
-		  dialog.setMessage("Please check your mobile network settings and try again");
-		  dialog.setButton("OK", new DialogInterface.OnClickListener() {
-		      public void onClick(DialogInterface dialog, int which) {
-		    	  return;
-		    } });
-		  dialog.show();
+		dialog.setTitle("Cannot connect to Schedule");
+		dialog.setMessage("Please check your mobile network settings and try again");
+		dialog.setButton("OK", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				return;
+			}
+		});
+		dialog.show();
 	}
-	
+
 	private void downloadFile() {
 		Log.d("getUserTimetable", "UserID: " + userID);
 		try {
 			URL url = new URL(
 					"https://itcollege.ois.ee/schedule?&format=json&student_id="
-							+ URLEncoder.encode(userID) + "&date=" + URLEncoder.encode(showtext_current));
+							+ URLEncoder.encode(userID) + "&date="
+							+ URLEncoder.encode(showtext_current));
 			new GetUrlContents().execute(url);
 			Log.d("getUserTimetable", "url: " + url);
 		} catch (MalformedURLException e) {
-		//	Log.d("EventListFragment", "Ei õnnestunud Internetist andmeid saada. exception:" +e);
+			// Log.d("EventListFragment",
+			// "Ei õnnestunud Internetist andmeid saada. exception:" +e);
 			e.printStackTrace();
-			//showAlert();
+			// showAlert();
 		}
 	}
-	
+
 	public static JSONObject parseJSON(String result) {
 		JSONObject json = null;
-		if (result == null) {
-			showAlert();
-			return null;
-		}
 		try {
 			json = new JSONObject(result);
 			@SuppressWarnings("unchecked")
@@ -269,8 +270,10 @@ public class EventListFragment extends ListFragment {
 										.getJSONObject("description");
 
 								String weekday = atributes.getString("weekday");
-								Log.d("EventListFragment", "weekday: " +weekday);
-								Log.d("EventListFragment", "dayOfWeek: " +dayOfWeek);	
+								Log.d("EventListFragment", "weekday: "
+										+ weekday);
+								Log.d("EventListFragment", "dayOfWeek: "
+										+ dayOfWeek);
 								if (weekday.equals(Integer.toString(dayOfWeek))) {
 									Event event = new Event();
 									event.setWeekday(weekday);
@@ -363,13 +366,23 @@ public class EventListFragment extends ListFragment {
 		}
 		showEventsFromJSON(result);
 	}
-	
+
 	private void showEventsFromJSON(String result) {
+		Log.d("EventListFragment", "Test: showEventsFromJSON");
 		events.clear();
 		parseJSON(result);
 		EventAdapter adapter = new EventAdapter(getActivity());
+		compareEvents();
 		adapter.setEvents(events);
 		setListAdapter(adapter);
+	}
+
+	public static void compareEvents() {
+		Collections.sort(events, new Comparator<Event>() {
+			public int compare(Event s1, Event s2) {
+				return s1.getStartDate().compareToIgnoreCase(s2.getStartDate());
+			}
+		});		
 	}
 
 	private class GetUrlContents extends AsyncTask<URL, Void, String> {
