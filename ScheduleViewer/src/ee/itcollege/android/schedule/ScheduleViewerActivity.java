@@ -4,6 +4,7 @@ package ee.itcollege.android.schedule;
 import java.sql.Date;
 import java.util.Calendar;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -14,7 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class ScheduleViewerActivity extends FragmentActivity {
-	
+	public static Context context;
 	public String showtext_current;
 //	public String showtext_previous = EventListFragment.showtext_previous;
 //	public String showtext_next = EventListFragment.showtext_next;
@@ -33,6 +34,8 @@ public class ScheduleViewerActivity extends FragmentActivity {
 	
 	TextView currently_shown_schedule;
 	currently_shown_schedule = (TextView) findViewById(R.id.currently_shown_schedule);
+	context = currently_shown_schedule.getContext();
+	EventListFragment.context = context;
 	currently_shown_schedule.setText(showtext_current);
 
     }

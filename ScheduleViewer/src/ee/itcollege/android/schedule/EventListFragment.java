@@ -22,6 +22,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v4.app.ListFragment;
@@ -38,7 +42,8 @@ public class EventListFragment extends ListFragment {
 	public static String showtext_previous;
 	public static String showtext_next;
 	public static int dayOfWeek; //valitud kuupäeva nädalapäev. Nt 2012-05-18 -> 5 (ehk reede)
-	public Activity activity;
+	public static Activity activity;
+	public static Context context = ScheduleViewerActivity.context;
 	
 	public int getWeekdayOfToday(){
 		// tänane nädalapäev numbrites
@@ -197,6 +202,17 @@ public class EventListFragment extends ListFragment {
 		}
 	}
 	
+	public static void showAlert() {
+		AlertDialog dialog = new AlertDialog.Builder(context).create();
+		  dialog.setTitle("Cannot connect to Schedule");
+		  dialog.setMessage("Please check your mobile network settings and try again");
+		  dialog.setButton("OK", new DialogInterface.OnClickListener() {
+		      public void onClick(DialogInterface dialog, int which) {
+		    	  return;
+		    } });
+		  dialog.show();
+	}
+	
 	private void downloadFile() {
 		Log.d("getUserTimetable", "UserID: " + userID);
 		try {
@@ -206,12 +222,18 @@ public class EventListFragment extends ListFragment {
 			new GetUrlContents().execute(url);
 			Log.d("getUserTimetable", "url: " + url);
 		} catch (MalformedURLException e) {
+		//	Log.d("EventListFragment", "Ei õnnestunud Internetist andmeid saada. exception:" +e);
 			e.printStackTrace();
+			//showAlert();
 		}
 	}
 	
 	public static JSONObject parseJSON(String result) {
 		JSONObject json = null;
+		if (result == null) {
+			showAlert();
+			return null;
+		}
 		try {
 			json = new JSONObject(result);
 			@SuppressWarnings("unchecked")
