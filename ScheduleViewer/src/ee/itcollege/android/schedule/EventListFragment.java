@@ -8,7 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -43,6 +42,7 @@ public class EventListFragment extends ListFragment {
 	public static String showtext_current;
 	public static String showtext_previous;
 	public static String showtext_next;
+	public static boolean onNextDateClicked = false;
 	public static int dayOfWeek; // valitud kuupŠeva nŠdalapŠev. Nt 2012-05-18
 									// -> 5 (ehk reede)
 	public static Activity activity;
@@ -152,9 +152,14 @@ public class EventListFragment extends ListFragment {
 	}
 
 	private boolean fileExists() {
+		Log.d("EventListFragment", "fileExists()");
 		File sdcard = Environment.getExternalStorageDirectory();
 		File dir = new File(sdcard.getAbsolutePath() + "/Schedule");
+		Log.d("EventListFragment", "dir: " +dir);
+		
 		File file = new File(dir, filename());
+		Log.d("EventListFragment", "file: " +file);
+		Log.d("EventListFragment", "fileExists: " +file.exists());
 		return file.exists();
 	}
 
@@ -163,6 +168,10 @@ public class EventListFragment extends ListFragment {
 	}
 
 	private void writeToSDCard(String result) throws IOException {
+		if ((null == result) || (0 == result.length())) {
+			return; // will not write empty file
+		}
+		
 		Log.d("EventListFragment", "writeToSDCard: result: " + result);
 		File sdcard = Environment.getExternalStorageDirectory();
 		File dir = new File(sdcard.getAbsolutePath() + "/Schedule");
@@ -181,33 +190,31 @@ public class EventListFragment extends ListFragment {
 		}
 	}
 
-	private String readFile() {
+	private String readFile() throws IOException {
 		File sdcard = Environment.getExternalStorageDirectory();
 		File dir = new File(sdcard.getAbsolutePath() + "/Schedule");
 		File file = new File(dir, filename());
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(file));
-			return br.readLine();
-		} catch (IOException e) {
-			Log.d("EventListFragment", "readFile: " + e);
-		}
-
-		return null;
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		return br.readLine();
 	}
 
 	public void getSearchResults() {
 		if (!fileExists()) {
 			downloadFile();
 		} else {
-			String result = readFile();
-			showEventsFromJSON(result);
+			try {
+				String result = readFile();
+				showEventsFromJSON(result);
+			} catch(Exception e) {
+			//	 showAlert("Error", e.getMessage());
+			}
 		}
 	}
 
-	public static void showAlert() {
+	public static void showAlert(String title, String message) {
 		AlertDialog dialog = new AlertDialog.Builder(context).create();
-		dialog.setTitle("Cannot connect to Schedule");
-		dialog.setMessage("Please check your mobile network settings and try again");
+		dialog.setTitle(title);
+		dialog.setMessage(message);
 		dialog.setButton("OK", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				return;
@@ -217,7 +224,8 @@ public class EventListFragment extends ListFragment {
 	}
 
 	private void downloadFile() {
-		Log.d("getUserTimetable", "UserID: " + userID);
+		Log.d("EventListFragment", "downloadFile");
+		Log.d("EventListFragment", "UserID: " + userID);
 		try {
 			URL url = new URL(
 					"https://itcollege.ois.ee/schedule?&format=json&student_id="
@@ -225,17 +233,21 @@ public class EventListFragment extends ListFragment {
 							+ URLEncoder.encode(showtext_current));
 			new GetUrlContents().execute(url);
 			Log.d("getUserTimetable", "url: " + url);
-		} catch (MalformedURLException e) {
-			// Log.d("EventListFragment",
-			// "Ei ›nnestunud Internetist andmeid saada. exception:" +e);
-			e.printStackTrace();
-			// showAlert();
+		} catch (Exception e) {
+	//		showAlert("Error", e.getMessage());
 		}
 	}
 
 	public static JSONObject parseJSON(String result) {
 		JSONObject json = null;
+		if(result.length() == 0){
+			Log.d("EventListFragment", "parseJSON: result.length() == 0 ");
+			
+			return json;
+		}
+			
 		try {
+			Log.d("EventListFragment", "parseJSON: TRY");
 			json = new JSONObject(result);
 			@SuppressWarnings("unchecked")
 			Iterator<String> i = json.keys();
@@ -351,8 +363,7 @@ public class EventListFragment extends ListFragment {
 				}
 			}
 		} catch (JSONException e) {
-			e.printStackTrace();
-			return null;
+//			showAlert("Error", e.getMessage());
 		}
 		return json;
 	}
@@ -362,7 +373,7 @@ public class EventListFragment extends ListFragment {
 		try {
 			writeToSDCard(result);
 		} catch (IOException e) {
-			e.printStackTrace();
+//			showAlert("Error", e.getMessage());
 		}
 		showEventsFromJSON(result);
 	}
@@ -386,9 +397,10 @@ public class EventListFragment extends ListFragment {
 	}
 
 	private class GetUrlContents extends AsyncTask<URL, Void, String> {
-
+		
 		@Override
 		protected String doInBackground(URL... params) {
+			Log.d("EventListFragment", "GetUrlContents");
 			StringBuilder sb = new StringBuilder();
 
 			try {
@@ -407,7 +419,7 @@ public class EventListFragment extends ListFragment {
 				connection.disconnect();
 
 			} catch (IOException e) {
-				e.printStackTrace();
+//				showAlert("Error", e.getMessage());
 			}
 			return sb.toString();
 		}
@@ -415,7 +427,16 @@ public class EventListFragment extends ListFragment {
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-			Log.d("onPostExecute", "@result: " + result);
+			if(result.length() == 0) {
+				showAlert("†henduse viga", "Tunniplaani kuvamine eba›nnestus. Palun kontrolli seadme Interneti Ÿhendust.");
+				if(onNextDateClicked) {
+				getPreviousDateSchedule();
+				} else {
+					getNextDateSchedule();
+				}
+					
+			}
+			Log.d("EventListFragment", "onPostExecute @result: " + result);
 			requestComplete(result);
 		}
 	}
