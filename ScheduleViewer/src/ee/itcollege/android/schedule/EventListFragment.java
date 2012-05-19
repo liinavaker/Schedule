@@ -36,6 +36,7 @@ public class EventListFragment extends ListFragment {
 	public static String showtext_previous;
 	public static String showtext_next;
 	public int dayOfWeek; //valitud kuupäeva nädalapäev. Nt 2012-05-18 -> 5 (ehk reede)
+	public Activity activity;
 
 	
 	public int getWeekdayOfToday(){
@@ -84,18 +85,12 @@ public class EventListFragment extends ListFragment {
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-
 		
-
+		
 		int testday = getDayOfWeekFromDatetoString(showtext_current);
-		String previousDay = getPreviousDate(showtext_current).toString();
-		String nextDay = getNextDate(showtext_current).toString();
+
 		Log.d("EventListFragment", "*****");
 		Log.d("EventListFragment", "dayOfWeek today: " + testday);
-		Log.d("EventListFragment", "*****");
-		Log.d("EventListFragment", "nextDay: " +nextDay);
-		Log.d("EventListFragment", "*****");
-		Log.d("EventListFragment", "previoustDay: " +previousDay);
 		Log.d("EventListFragment", "*****");
 		// Tükeldan Date-tüüpi kuupäeva (yyyy-mm-dd) ära eraldi kolmeks
 		// stringiks.
@@ -104,7 +99,8 @@ public class EventListFragment extends ListFragment {
 			getSearchResults(userID);
 	}
 
-	public static Date getPreviousDate(String currentDate) {
+	public static void getPreviousDateSchedule() {
+		String currentDate = showtext_current;
 		String[] tokens = currentDate.split("-");
 		int yyyy = Integer.parseInt(tokens[0]);
 		String mm = tokens[1];
@@ -115,10 +111,12 @@ public class EventListFragment extends ListFragment {
 		// Make an SQL Date out of that
 		java.sql.Date previousDate = new java.sql.Date(cal.getTimeInMillis());
 		Log.d("EventListFragment", "getDate tulemus: " +previousDate);
-		return previousDate;
+		showtext_current = previousDate.toString();
 	}
 	
-	public static Date getNextDate(String currentDate) {
+	
+	public static void getNextDateSchedule() {
+		String currentDate = showtext_current;
 		String[] tokens = currentDate.split("-");
 		int yyyy = Integer.parseInt(tokens[0]);
 		String mm = tokens[1];
@@ -129,7 +127,7 @@ public class EventListFragment extends ListFragment {
 		// Make an SQL Date out of that
 		java.sql.Date nextDate = new java.sql.Date(cal.getTimeInMillis());
 		Log.d("EventListFragment", "getDate tulemus: " +nextDate);
-		return nextDate;
+		showtext_current = nextDate.toString();
 	}
 
 	public static Date getDate(int vahe) {
@@ -144,12 +142,13 @@ public class EventListFragment extends ListFragment {
 
 	public void getSearchResults(String userID) {
 		Log.d("getUserTimetable", "UserID: " + userID);
-
+		
 		try {
 			URL url = new URL(
 					"https://itcollege.ois.ee/schedule?&format=json&student_id="
-							+ URLEncoder.encode(userID));
+							+ URLEncoder.encode(userID) + "&date=" + URLEncoder.encode(showtext_current));
 			new GetUrlContents().execute(url);
+			Log.d("getUserTimetable", "url: " + url);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -157,7 +156,7 @@ public class EventListFragment extends ListFragment {
 
 	private void requestComplete(String result) {
 		Log.d("EventListFragment", "requestComplete()");
-		// events.clear();
+		events.clear();
 		try {
 			JSONObject json = new JSONObject(result);
 
@@ -267,7 +266,6 @@ public class EventListFragment extends ListFragment {
 													+ events.size());
 
 								}
-
 							}
 						}
 					}

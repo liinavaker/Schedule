@@ -7,6 +7,7 @@ import java.util.Calendar;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -34,11 +35,28 @@ public class ScheduleViewerActivity extends FragmentActivity {
 	currently_shown_schedule = (TextView) findViewById(R.id.currently_shown_schedule);
 	currently_shown_schedule.setText(showtext_current);
 
-	
-	
-	
     }
     
+    public void onNextDateClicked(View view) {
+    	EventListFragment fragment = (EventListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_event_list);
+    	EventListFragment.getNextDateSchedule();
+    	fragment.onAttach(getParent());
+    	
+    	TextView currently_shown_schedule;
+    	currently_shown_schedule = (TextView) findViewById(R.id.currently_shown_schedule);
+    	currently_shown_schedule.setText(EventListFragment.showtext_current);
+    }
+
+    public void onPreviousDateClicked(View view) {
+    	EventListFragment fragment = (EventListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_event_list);
+    	EventListFragment.getPreviousDateSchedule();
+    	fragment.onAttach(getParent());
+    	
+    	TextView currently_shown_schedule;
+    	currently_shown_schedule = (TextView) findViewById(R.id.currently_shown_schedule);
+    	currently_shown_schedule.setText(EventListFragment.showtext_current);
+    }
+
     
  /*   
     static String meetodMidaTahadValjaKutsuda(String numericalStudentIDstring) {

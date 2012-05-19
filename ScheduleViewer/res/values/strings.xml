@@ -11,4 +11,5 @@
     <string name="logoDescr">SIS logo (stylized flower)</string>
     <string name="ID_number">Enter your SIS \'&amp;student_id=\' number here</string>
     <string name="previous">&lt;</string>
+    <string name="next">&gt;</string>
 </resources>

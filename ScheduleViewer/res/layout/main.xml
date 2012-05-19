@@ -10,7 +10,7 @@
     	android:layout_height="wrap_content" 
     	android:orientation="horizontal"
     	android:background="#DED8D8"
-    	>
+    	android:weightSum="1">
 
         <Button 
         android:id="@+id/previousDate"
@@ -20,14 +20,19 @@
         android:textColor="#4099FF"
         android:gravity="left"
         android:text="@string/previous"
-         />
+        android:textSize="30dip"
+        android:layout_weight="0.25"
+        android:onClick ="onPreviousDateClicked" /> 
+         
     
     <TextView
         android:id="@+id/currently_shown_schedule"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
+        android:textSize="20dip"
         android:textColor="#4099FF"
+        android:layout_weight="0.5"
         android:gravity="center" />
     
     <Button 
@@ -37,7 +42,10 @@
         android:textStyle="bold"
         android:textColor="#4099FF"
         android:gravity="right"
-        android:text=">" />
+        android:text="@string/next" 
+        android:textSize="30dip"
+        android:layout_weight="0.25"
+        android:onClick ="onNextDateClicked" /> 
     
     
     
