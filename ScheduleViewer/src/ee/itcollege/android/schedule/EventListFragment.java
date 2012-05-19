@@ -1,15 +1,16 @@
 package ee.itcollege.android.schedule;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.security.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,11 +23,12 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 
 public class EventListFragment extends ListFragment {
-	private ArrayList<Event> events = new ArrayList<Event>();
+	private static ArrayList<Event> events = new ArrayList<Event>();
 
 	public static String userID = "1679";
 	// public int aasta;
@@ -35,9 +37,8 @@ public class EventListFragment extends ListFragment {
 	public static String showtext_current;
 	public static String showtext_previous;
 	public static String showtext_next;
-	public int dayOfWeek; //valitud kuupäeva nädalapäev. Nt 2012-05-18 -> 5 (ehk reede)
+	public static int dayOfWeek; //valitud kuupäeva nädalapäev. Nt 2012-05-18 -> 5 (ehk reede)
 	public Activity activity;
-
 	
 	public int getWeekdayOfToday(){
 		// tänane nädalapäev numbrites
@@ -51,7 +52,6 @@ public class EventListFragment extends ListFragment {
 		
 		return today; 
 	}
-	
 	
 	public int getDayOfWeekFromDatetoString(String date) {
 		
@@ -95,8 +95,7 @@ public class EventListFragment extends ListFragment {
 		// Tükeldan Date-tüüpi kuupäeva (yyyy-mm-dd) ära eraldi kolmeks
 		// stringiks.
 		dayOfWeek = testday;
-		
-			getSearchResults(userID);
+			getSearchResults();
 	}
 
 	public static void getPreviousDateSchedule() {
@@ -139,10 +138,67 @@ public class EventListFragment extends ListFragment {
 		Log.d("EventListFragment", "getDate tulemus: " +date);
 		return date;
 	}
-
-	public void getSearchResults(String userID) {
-		Log.d("getUserTimetable", "UserID: " + userID);
+	
+	private String fileName() {
+		// 1234_2012-05-19.json
+		return userID + "_ " + showtext_current + ".json";
+	}
+	
+	private boolean fileExists() {
+		File sdcard = Environment.getExternalStorageDirectory();	
+		File dir = new File(sdcard.getAbsolutePath() + "/Schedule");
+		File file = new File(dir, filename());
+		return file.exists();
+	}
+	
+	private String filename() {
+		return userID + "_" + showtext_current + ".json";
+	}
+	
+	private void writeToSDCard(String result) throws IOException {
+		Log.d("EventListFragment", "writeToSDCard: result: " + result);
+		File sdcard = Environment.getExternalStorageDirectory();	
+		File dir = new File (sdcard.getAbsolutePath() + "/Schedule");
+		dir.mkdirs();
 		
+		//Get the text file
+		File file = new File(dir, filename());
+		BufferedWriter br = null;
+		try {
+			br = new BufferedWriter(new FileWriter(file));
+			br.write(result);
+			br.flush();
+		} finally {
+			if (null != br) br.close();
+		}
+	}
+	
+	private String readFile() {
+		File sdcard = Environment.getExternalStorageDirectory();	
+		File dir = new File (sdcard.getAbsolutePath() + "/Schedule");
+		File file = new File(dir, filename());
+		try {
+		    BufferedReader br = new BufferedReader(new FileReader(file));
+		    return br.readLine();
+		}
+		catch (IOException e) {
+		    Log.d("EventListFragment", "readFile: " +e);
+		}
+		
+		return null;
+	}
+
+	public void getSearchResults() {
+		if (! fileExists()) {
+			downloadFile();
+		} else {
+			String result = readFile();
+			showEventsFromJSON(result);
+		}
+	}
+	
+	private void downloadFile() {
+		Log.d("getUserTimetable", "UserID: " + userID);
 		try {
 			URL url = new URL(
 					"https://itcollege.ois.ee/schedule?&format=json&student_id="
@@ -153,13 +209,11 @@ public class EventListFragment extends ListFragment {
 			e.printStackTrace();
 		}
 	}
-
-	private void requestComplete(String result) {
-		Log.d("EventListFragment", "requestComplete()");
-		events.clear();
+	
+	public static JSONObject parseJSON(String result) {
+		JSONObject json = null;
 		try {
-			JSONObject json = new JSONObject(result);
-
+			json = new JSONObject(result);
 			@SuppressWarnings("unchecked")
 			Iterator<String> i = json.keys();
 			while (i.hasNext()) {
@@ -273,7 +327,24 @@ public class EventListFragment extends ListFragment {
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
+			return null;
 		}
+		return json;
+	}
+
+	private void requestComplete(String result) {
+		Log.d("EventListFragment", "requestComplete()");
+		try {
+			writeToSDCard(result);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		showEventsFromJSON(result);
+	}
+	
+	private void showEventsFromJSON(String result) {
+		events.clear();
+		parseJSON(result);
 		EventAdapter adapter = new EventAdapter(getActivity());
 		adapter.setEvents(events);
 		setListAdapter(adapter);
