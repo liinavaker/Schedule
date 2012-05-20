@@ -20,7 +20,7 @@
     
         <Button 
         android:id="@+id/previousDate"
-        android:layout_width="wrap_content"
+        android:layout_width="0dip"
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:textColor="#4099FF"
@@ -33,7 +33,7 @@
     
     <TextView
         android:id="@+id/currently_shown_schedule"
-        android:layout_width="wrap_content"
+        android:layout_width="0dip"
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:textSize="20dip"
@@ -43,7 +43,7 @@
     
     <Button 
         android:id="@+id/nextDate"
-        android:layout_width="wrap_content"
+        android:layout_width="0dip"
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:textColor="#4099FF"

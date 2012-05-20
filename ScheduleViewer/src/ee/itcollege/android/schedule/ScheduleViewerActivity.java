@@ -44,7 +44,7 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		int yyyy = Integer.parseInt(tokens[0]);
 		int mm = Integer.parseInt(tokens[1]);
 		int dd = Integer.parseInt(tokens[2]);
-		String[] kuud = { "jaanuar", "veebruar", "märts", "aprill", "mai", "juuni", "juuli", "august", "september", "oktoober", "november", "detsember"};
+		String[] kuud = { "jaan.", "veebr.", "märts", "aprill", "mai", "juuni", "juuli", "august", "sept.", "okt.", "nov.", "dets."};
 		String kuu ="";
 		for(int i = 0; i < kuud.length; i++) {
 			if (mm-1 == i) {
