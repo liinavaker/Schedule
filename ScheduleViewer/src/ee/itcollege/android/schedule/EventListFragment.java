@@ -17,11 +17,9 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -30,10 +28,12 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class EventListFragment extends ListFragment {
-	private static ArrayList<Event> events = new ArrayList<Event>();
-	private static ArrayList<Event> events_sorted = new ArrayList<Event>();
+	public static ArrayList<Event> events = new ArrayList<Event>();
+
 
 	public static String userID = "1679";
 	// public int aasta;
@@ -47,7 +47,7 @@ public class EventListFragment extends ListFragment {
 									// -> 5 (ehk reede)
 	public static Activity activity;
 	public static Context context = ScheduleViewerActivity.context;
-
+	public static boolean eventsEmpty = false;
 	public int getWeekdayOfToday() {
 		// tänane nädalapäev numbrites
 		Calendar cal = Calendar.getInstance();
@@ -94,9 +94,9 @@ public class EventListFragment extends ListFragment {
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-
+		eventsEmpty = false;
+		
 		int testday = getDayOfWeekFromDatetoString(showtext_current);
-
 		Log.d("EventListFragment", "*****");
 		Log.d("EventListFragment", "dayOfWeek today: " + testday);
 		Log.d("EventListFragment", "*****");
@@ -122,6 +122,7 @@ public class EventListFragment extends ListFragment {
 	}
 
 	public static void getNextDateSchedule() {
+		Log.d("EventListFragment", "TextView showTextNoEvents: " +ScheduleViewerActivity.showTextNoEvents);
 		String currentDate = showtext_current;
 		String[] tokens = currentDate.split("-");
 		int yyyy = Integer.parseInt(tokens[0]);
@@ -144,11 +145,6 @@ public class EventListFragment extends ListFragment {
 		java.sql.Date date = new java.sql.Date(cal.getTimeInMillis());
 		Log.d("EventListFragment", "getDate tulemus: " + date);
 		return date;
-	}
-
-	private String fileName() {
-		// 1234_2012-05-19.json
-		return userID + "_ " + showtext_current + ".json";
 	}
 
 	private boolean fileExists() {
@@ -237,12 +233,11 @@ public class EventListFragment extends ListFragment {
 	//		showAlert("Error", e.getMessage());
 		}
 	}
-
+	
 	public static JSONObject parseJSON(String result) {
 		JSONObject json = null;
 		if(result.length() == 0){
-			Log.d("EventListFragment", "parseJSON: result.length() == 0 ");
-			
+			Log.d("EventListFragment", "parseJSON: result.length() == 0 ");			
 			return json;
 		}
 			
@@ -357,11 +352,27 @@ public class EventListFragment extends ListFragment {
 													+ events.size());
 
 								}
-							}
+							} 
 						}
 					}
 				}
 			}
+			if(events.size() == 0) {
+				eventsEmpty = true;
+				Log.d("EventListFragment", "FirstTime: " +ScheduleViewerActivity.firstTime);
+				if(ScheduleViewerActivity.firstTime == false) {
+				ScheduleViewerActivity.showNoEvents();
+				Log.d("EventListFragment", "IF SEES ||FirstTime: " +ScheduleViewerActivity.firstTime);
+				}
+			} if (events.size() != 0) {
+				Log.d("EventListFragment", "FIRST events.size() != 0");
+				eventsEmpty = false;
+				if(ScheduleViewerActivity.firstTime == false) { 
+				Log.d("EventListFragment", "IF SEES ||FirstTime: " +ScheduleViewerActivity.firstTime);
+				ScheduleViewerActivity.showNoEvents();
+				}
+			}
+			
 		} catch (JSONException e) {
 //			showAlert("Error", e.getMessage());
 		}
@@ -380,6 +391,7 @@ public class EventListFragment extends ListFragment {
 
 	private void showEventsFromJSON(String result) {
 		Log.d("EventListFragment", "Test: showEventsFromJSON");
+		Log.d("EventListFragment", "Array events suurus: " +events.size());
 		events.clear();
 		parseJSON(result);
 		EventAdapter adapter = new EventAdapter(getActivity());

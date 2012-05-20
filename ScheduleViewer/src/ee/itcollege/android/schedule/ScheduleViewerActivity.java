@@ -13,6 +13,8 @@ import android.widget.TextView;
 public class ScheduleViewerActivity extends FragmentActivity {
 	public static Context context;
 	public String showtext_current;
+	public static TextView showTextNoEvents;
+	public static Boolean firstTime = true;
 
 	// public String showtext_previous = EventListFragment.showtext_previous;
 	// public String showtext_next = EventListFragment.showtext_next;
@@ -29,13 +31,25 @@ public class ScheduleViewerActivity extends FragmentActivity {
 				+ showtext_current);
 
 		setContentView(R.layout.main);
-
+		showTextNoEvents = (TextView) findViewById(R.id.no_events);
 		TextView currently_shown_schedule;
 		currently_shown_schedule = (TextView) findViewById(R.id.currently_shown_schedule);
 		context = currently_shown_schedule.getContext();
 		EventListFragment.context = context;
 		String estonianDate = parseDateIntoEstonian(showtext_current);
 		currently_shown_schedule.setText(estonianDate);
+		
+		showNoEvents();
+		firstTime = false;
+	}
+	
+	public static void showNoEvents() {
+		if(EventListFragment.eventsEmpty) {
+			showTextNoEvents.setText("Pole ühtegi sündmust");
+			showTextNoEvents.setVisibility(View.VISIBLE);
+		} if (!EventListFragment.eventsEmpty) {
+			showTextNoEvents.setVisibility(View.GONE);
+		}
 	}
 	
 	public String parseDateIntoEstonian(String date) {
@@ -126,7 +140,6 @@ public class ScheduleViewerActivity extends FragmentActivity {
 				.findFragmentById(R.id.fragment_event_list);
 		EventListFragment.getNextDateSchedule();
 		fragment.onAttach(getParent());
-
 		TextView currently_shown_schedule;
 		currently_shown_schedule = (TextView) findViewById(R.id.currently_shown_schedule);
 		String estonianDate = parseDateIntoEstonian(EventListFragment.showtext_current);
@@ -145,6 +158,7 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		String estonianDate = parseDateIntoEstonian(EventListFragment.showtext_current);
 		currently_shown_schedule.setText(estonianDate);
 	}
+	
 
 	/*
 	 * static String meetodMidaTahadValjaKutsuda(String

@@ -54,7 +54,18 @@
         android:onClick ="onNextDateClicked" /> 
     
 </LinearLayout>
-    <fragment android:name="ee.itcollege.android.schedule.EventListFragment"
+   
+   <TextView 
+        android:id="@+id/no_events"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="20dip"
+        android:textColor="#4099FF"
+        android:gravity="center|center_vertical" />          
+   
+   
+<fragment android:name="ee.itcollege.android.schedule.EventListFragment"
         android:id="@+id/fragment_event_list"
         android:layout_width="match_parent"
         android:cacheColorHint="#EBEBEB"
