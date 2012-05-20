@@ -46,7 +46,15 @@ public class ScheduleViewerActivity extends FragmentActivity {
 				kuu = kuud[i];
 			}
 		}
-		String estonianDate = Integer.toString(dd) + ". " + kuu + " " + Integer.toString(yyyy); 
+		String[] daytokens = Integer.toString(dd).split("");
+		String dayWithoutZero = "";
+		if(daytokens[0] == "0"){
+			dayWithoutZero = daytokens[1];
+		} else {
+			dayWithoutZero = Integer.toString(dd);
+		}
+		
+		String estonianDate = dayWithoutZero + ". " + kuu + " " + Integer.toString(yyyy); 
 		return estonianDate;
 	}
 	
