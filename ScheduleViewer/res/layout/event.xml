@@ -4,7 +4,6 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     android:clickable="false"
-    android:cacheColorHint="#EBEBEB"
     android:padding="10dip">
 
     <TextView
@@ -17,19 +16,19 @@
     <TextView
         android:id="@+id/event_date"
         android:layout_width="wrap_content"
-        android:textColor="#2E3436"
+        android:textColor="#EBEBEB"
         android:layout_height="wrap_content" />
     
     <TextView
         android:id="@+id/event_details"
         android:layout_width="wrap_content"
-        android:textColor="#2E3436"
+        android:textColor="#EBEBEB"
         android:layout_height="wrap_content" />
     
     <TextView
         android:id="@+id/event_location"
         android:layout_width="wrap_content"
-        android:textColor="#2E3436"
+        android:textColor="#EBEBEB"
         android:layout_height="wrap_content" />
     
 

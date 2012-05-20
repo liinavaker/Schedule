@@ -2,9 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:cacheColorHint="#EBEBEB"
-    android:background="#EBEBEB">
+    android:orientation="vertical">
     
 <LinearLayout
     android:layout_width="fill_parent"
@@ -12,6 +10,8 @@
     android:layout_gravity="center"
     android:paddingTop="8dip"
     android:paddingBottom="5dip"
+    android:paddingLeft="5dip"
+    android:paddingRight="5dip"
     android:background="#2E3436"
     android:gravity="center|center_vertical"
     android:orientation="horizontal"
@@ -21,36 +21,54 @@
         <Button 
         android:id="@+id/previousDate"
         android:layout_width="0dip"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textColor="#4099FF"
-        android:gravity="left|center_vertical"
-        android:text="@string/previous"
-        android:textSize="30dip"
-        android:layout_weight="0.25"
+        android:layout_height="fill_parent"
+        android:gravity="left"
+        android:background="@drawable/backward_2copy"
+        android:layout_weight="0.3"
+         android:maxWidth="45dip"
         android:onClick ="onPreviousDateClicked" /> 
          
-    
-    <TextView
-        android:id="@+id/currently_shown_schedule"
-        android:layout_width="0dip"
+    <LinearLayout 
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_weight="0.4"
+    android:orientation="vertical" >
+        
+        <TextView
+        android:id="@+id/weekday"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
+        android:textStyle="normal"
+        android:textSize="20dip"
+        android:gravity="center"
+        android:maxLines="1"
+        android:lineSpacingMultiplier="1"
+        android:includeFontPadding="false"
+        android:lineSpacingExtra="0px"
+        android:paddingBottom="0dp"
+        android:textColor="#EBEBEB"/>
+        
+        
+        <TextView
+        android:id="@+id/currently_shown_schedule"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="normal"
         android:textSize="20dip"
         android:textColor="#EBEBEB"
-        android:layout_weight="0.5"
-        android:gravity="center|center_vertical" />
-    
+        android:gravity="center"
+        android:maxLines="1"/>
+                
+        </LinearLayout>
+   
     <Button 
         android:id="@+id/nextDate"
         android:layout_width="0dip"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textColor="#4099FF"
+        android:layout_height="fill_parent"
         android:gravity="right|center_vertical"
-        android:text="@string/next" 
-        android:textSize="30dip"
-        android:layout_weight="0.25"
+        android:background="@drawable/forward_2copy"
+        android:layout_weight="0.3"
+        android:maxWidth="45dip"
         android:onClick ="onNextDateClicked" /> 
     
 </LinearLayout>

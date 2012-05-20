@@ -39,6 +39,10 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		String estonianDate = parseDateIntoEstonian(showtext_current);
 		currently_shown_schedule.setText(estonianDate);
 		
+		TextView weekday = (TextView) findViewById(R.id.weekday);
+		String weekdayString = getWeekday(showtext_current);
+		weekday.setText(weekdayString);
+		
 		showNoEvents();
 		firstTime = false;
 	}
@@ -50,6 +54,22 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		} if (!EventListFragment.eventsEmpty) {
 			showTextNoEvents.setVisibility(View.GONE);
 		}
+	}
+	
+	public String getWeekday (String current_date) {
+		int weekdayInNum = EventListFragment.getDayOfWeekFromDatetoString(EventListFragment.showtext_current);
+		String[] weekdays ={"pühapäev","esmaspäev", "teisipäev", "kolmapäev", "neljapäev", "reede", "laupäev"};
+		String weekday = "";
+		Log.d("ScheduleViewerActivity", "weekdayInNum: "
+				+ weekdayInNum);
+		for(int i = 0; i < weekdays.length; i++) {
+			if(weekdayInNum == i){
+				weekday = weekdays[i];
+			}
+		}
+		Log.d("ScheduleViewerActivity", "weekday: "
+				+ weekday);
+		return weekday;
 	}
 	
 	public String parseDateIntoEstonian(String date) {
@@ -123,11 +143,11 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		Log.d("ScheduleViewerActivity", "today: " +today);
 		Log.d("ScheduleViewerActivity", "tomorrow: " +tomorrow);
 		if(datecurrentlyshown.equals(yesterday)){
-			ifclose = "Eile";
+			ifclose = "eile";
 		} if(datecurrentlyshown.equals(today)) {
-			ifclose = "Täna";
+			ifclose = "täna";
 		} if(datecurrentlyshown.equals(tomorrow)) {
-			ifclose = "Homme";
+			ifclose = "homme";
 		} 
 		Log.d("ScheduleViewerActivity", "ifclose: " +ifclose);
 		return ifclose;
@@ -140,10 +160,16 @@ public class ScheduleViewerActivity extends FragmentActivity {
 				.findFragmentById(R.id.fragment_event_list);
 		EventListFragment.getNextDateSchedule();
 		fragment.onAttach(getParent());
-		TextView currently_shown_schedule;
-		currently_shown_schedule = (TextView) findViewById(R.id.currently_shown_schedule);
+				
+		TextView currently_shown_schedule = (TextView) findViewById(R.id.currently_shown_schedule);
 		String estonianDate = parseDateIntoEstonian(EventListFragment.showtext_current);
+		String date = EventListFragment.showtext_current;
 		currently_shown_schedule.setText(estonianDate);
+		
+		TextView weekday = (TextView) findViewById(R.id.weekday);
+		String weekdayString = getWeekday(date);
+		weekday.setText(weekdayString);
+
 	}
 
 	public void onPreviousDateClicked(View view) {
@@ -152,11 +178,17 @@ public class ScheduleViewerActivity extends FragmentActivity {
 				.findFragmentById(R.id.fragment_event_list);
 		EventListFragment.getPreviousDateSchedule();
 		fragment.onAttach(getParent());
-
+		
 		TextView currently_shown_schedule;
 		currently_shown_schedule = (TextView) findViewById(R.id.currently_shown_schedule);
 		String estonianDate = parseDateIntoEstonian(EventListFragment.showtext_current);
-		currently_shown_schedule.setText(estonianDate);
+		String date = EventListFragment.showtext_current;
+		currently_shown_schedule.setText(estonianDate);		
+		
+		TextView weekday = (TextView) findViewById(R.id.weekday);
+		String weekdayString = getWeekday(date);
+		weekday.setText(weekdayString);
+
 	}
 	
 

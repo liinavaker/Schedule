@@ -61,7 +61,7 @@ public class EventListFragment extends ListFragment {
 		return today;
 	}
 
-	public int getDayOfWeekFromDatetoString(String date) {
+	public static int getDayOfWeekFromDatetoString(String date) {
 
 		// Tükeldan Date-tüüpi kuupäeva (yyyy-mm-dd) ära eraldi kolmeks
 		// stringiks.
@@ -70,12 +70,6 @@ public class EventListFragment extends ListFragment {
 		String mm = tokens[1];
 		int dd = Integer.parseInt(tokens[2]);
 
-		Log.d("EventListFragment", "yyyy" + yyyy);
-		Log.d("EventListFragment", "mm" + mm);
-		Log.d("EventListFragment", "dd" + dd);
-
-		// kuna January = 0 ja Monday = 0, siis tuleb tulemusest 1 lahutada
-		// Tahan saada teada, mis nädalapäev(weekday) mingi kuupäev (Date) on.
 		Calendar calendar = new GregorianCalendar(yyyy,
 				Integer.parseInt(mm) - 1, dd);
 		int day;
@@ -104,7 +98,7 @@ public class EventListFragment extends ListFragment {
 		// stringiks.
 		dayOfWeek = testday;
 		getSearchResults();
-	}
+	} 
 
 	public static void getPreviousDateSchedule() {
 		String currentDate = showtext_current;
