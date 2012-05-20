@@ -32,6 +32,10 @@ public class EventAdapter extends BaseAdapter {
 	public long getItemId(int position) {
 		return position;
 	}
+	
+	public boolean isEnabled(int position) {
+		return false;
+	}
 
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View view = View.inflate(context, R.layout.event, null);
