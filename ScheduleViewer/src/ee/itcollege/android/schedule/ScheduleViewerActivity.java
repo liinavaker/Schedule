@@ -1,4 +1,8 @@
 package ee.itcollege.android.schedule;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -30,11 +34,12 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		currently_shown_schedule = (TextView) findViewById(R.id.currently_shown_schedule);
 		context = currently_shown_schedule.getContext();
 		EventListFragment.context = context;
-		String estonianDate = parseDate(showtext_current);
+		String estonianDate = parseDateIntoEstonian(showtext_current);
 		currently_shown_schedule.setText(estonianDate);
 	}
 	
-	public String parseDate(String date) {
+	public String parseDateIntoEstonian(String date) {
+		String today = checkIfToday(date);
 		String[] tokens = date.split("-");
 		int yyyy = Integer.parseInt(tokens[0]);
 		int mm = Integer.parseInt(tokens[1]);
@@ -52,13 +57,69 @@ public class ScheduleViewerActivity extends FragmentActivity {
 			dayWithoutZero = daytokens[1];
 		} else {
 			dayWithoutZero = Integer.toString(dd);
+		}	
+		String estonianDate = "";
+		if(today != ""){
+			estonianDate = today; 
+		} else {
+			estonianDate = dayWithoutZero + ". " + kuu + " " + Integer.toString(yyyy); 	
 		}
 		
-		String estonianDate = dayWithoutZero + ". " + kuu + " " + Integer.toString(yyyy); 
 		return estonianDate;
 	}
 	
-
+	public String checkIfToday(String date){
+		String expectedPattern = "yyyy-MM-dd";
+	    SimpleDateFormat formatter = new SimpleDateFormat(expectedPattern);
+		Date datecurrentlyshown = null;
+		try {
+			datecurrentlyshown = formatter.parse(date);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String yesterday_string = EventListFragment.getDate(-1).toString(); 
+		String today_string = EventListFragment.getDate(0).toString();
+		String tomorrow_string = EventListFragment.getDate(+1).toString(); 
+		String ifclose = "";
+		Date yesterday = null;
+		try {
+			yesterday = formatter.parse(yesterday_string);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Date today = null;
+		try {
+			today = formatter.parse(today_string);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Date tomorrow = null;
+		try {
+			tomorrow = formatter.parse(tomorrow_string);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Log.d("ScheduleViewerActivity", "datecurrentlyshown: " +datecurrentlyshown);
+		Log.d("ScheduleViewerActivity", "yesterday: " +yesterday);
+		Log.d("ScheduleViewerActivity", "today: " +today);
+		Log.d("ScheduleViewerActivity", "tomorrow: " +tomorrow);
+		if(datecurrentlyshown.equals(yesterday)){
+			ifclose = "Eile";
+		} if(datecurrentlyshown.equals(today)) {
+			ifclose = "TŠna";
+		} if(datecurrentlyshown.equals(tomorrow)) {
+			ifclose = "Homme";
+		} 
+		Log.d("ScheduleViewerActivity", "ifclose: " +ifclose);
+		return ifclose;
+	}
+	
+	
 	public void onNextDateClicked(View view) {
 		EventListFragment.onNextDateClicked = true;
 		EventListFragment fragment = (EventListFragment) getSupportFragmentManager()
@@ -68,9 +129,8 @@ public class ScheduleViewerActivity extends FragmentActivity {
 
 		TextView currently_shown_schedule;
 		currently_shown_schedule = (TextView) findViewById(R.id.currently_shown_schedule);
-		String estonianDate = parseDate(EventListFragment.showtext_current);
+		String estonianDate = parseDateIntoEstonian(EventListFragment.showtext_current);
 		currently_shown_schedule.setText(estonianDate);
-
 	}
 
 	public void onPreviousDateClicked(View view) {
@@ -82,9 +142,8 @@ public class ScheduleViewerActivity extends FragmentActivity {
 
 		TextView currently_shown_schedule;
 		currently_shown_schedule = (TextView) findViewById(R.id.currently_shown_schedule);
-		String estonianDate = parseDate(EventListFragment.showtext_current);
+		String estonianDate = parseDateIntoEstonian(EventListFragment.showtext_current);
 		currently_shown_schedule.setText(estonianDate);
-
 	}
 
 	/*
