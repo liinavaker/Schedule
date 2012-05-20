@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="hello">Hello World, Tunniplaani vaataja</string>
-    <string name="app_name">ÕIS Tunniplaani Jälgija</string>
+    <string name="app_name">Tunniplaan</string>
     <string name="LoremIpsum">Siia tuleb tunniplaan koos meelespeade
 		optsioonidega</string>
     <string name="schoolName">Eesti Infotehnoloogia Kolledži</string>

@@ -1,19 +1,9 @@
 package ee.itcollege.android.schedule;
-
-import java.io.File;
-import java.sql.Date;
-import java.util.Calendar;
-import java.util.Iterator;
-
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.TextView;
 
 public class ScheduleViewerActivity extends FragmentActivity {
@@ -40,8 +30,26 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		currently_shown_schedule = (TextView) findViewById(R.id.currently_shown_schedule);
 		context = currently_shown_schedule.getContext();
 		EventListFragment.context = context;
-		currently_shown_schedule.setText(showtext_current);
+		String estonianDate = parseDate(showtext_current);
+		currently_shown_schedule.setText(estonianDate);
 	}
+	
+	public String parseDate(String date) {
+		String[] tokens = date.split("-");
+		int yyyy = Integer.parseInt(tokens[0]);
+		int mm = Integer.parseInt(tokens[1]);
+		int dd = Integer.parseInt(tokens[2]);
+		String[] kuud = { "jaanuar", "veebruar", "märts", "aprill", "mai", "juuni", "juuli", "august", "september", "oktoober", "november", "detsember"};
+		String kuu ="";
+		for(int i = 0; i < kuud.length; i++) {
+			if (mm-1 == i) {
+				kuu = kuud[i];
+			}
+		}
+		String estonianDate = Integer.toString(dd) + ". " + kuu + " " + Integer.toString(yyyy); 
+		return estonianDate;
+	}
+	
 
 	public void onNextDateClicked(View view) {
 		EventListFragment.onNextDateClicked = true;
@@ -52,7 +60,9 @@ public class ScheduleViewerActivity extends FragmentActivity {
 
 		TextView currently_shown_schedule;
 		currently_shown_schedule = (TextView) findViewById(R.id.currently_shown_schedule);
-		currently_shown_schedule.setText(EventListFragment.showtext_current);
+		String estonianDate = parseDate(EventListFragment.showtext_current);
+		currently_shown_schedule.setText(estonianDate);
+
 	}
 
 	public void onPreviousDateClicked(View view) {
@@ -64,7 +74,9 @@ public class ScheduleViewerActivity extends FragmentActivity {
 
 		TextView currently_shown_schedule;
 		currently_shown_schedule = (TextView) findViewById(R.id.currently_shown_schedule);
-		currently_shown_schedule.setText(EventListFragment.showtext_current);
+		String estonianDate = parseDate(EventListFragment.showtext_current);
+		currently_shown_schedule.setText(estonianDate);
+
 	}
 
 	/*

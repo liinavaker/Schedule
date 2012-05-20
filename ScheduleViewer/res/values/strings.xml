@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="hello">Hello World, ScheduleViewerActivity!</string>
-    <string name="app_name">OIS Schedule Viewer</string>
+    <string name="app_name">Tunniplaan</string>
     <string name="LoremIpsum">Here there will be dragons!</string>
     <string name="schoolName">The Estonian Information Technology College</string>
     <string name="studyInformationSystem">Study Information System</string>
