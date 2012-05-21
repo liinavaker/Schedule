@@ -35,7 +35,7 @@ public class EventListFragment extends ListFragment {
 	public static ArrayList<Event> events = new ArrayList<Event>();
 
 
-	public static String userID = "1679";
+	public static String userID = "";
 	// public int aasta;
 	// public int kuu;
 	// public int kuupaev;
@@ -57,7 +57,6 @@ public class EventListFragment extends ListFragment {
 			today = 7;
 		} else
 			today = today - 1;
-
 		return today;
 	}
 
@@ -72,17 +71,20 @@ public class EventListFragment extends ListFragment {
 
 		Calendar calendar = new GregorianCalendar(yyyy,
 				Integer.parseInt(mm) - 1, dd);
-		int day;
-		day = calendar.get(Calendar.DAY_OF_WEEK);
-
-		if (day == 0) {
-			day = 7;
+		int day = calendar.get(Calendar.DAY_OF_WEEK);
+		int dayParsed = day;
+		
+		if (Integer.toString(day).equals("0")) {
+			dayParsed = 7;
 		} else
-			day = day - 1;
+			dayParsed = day - 1;
+		if(dayParsed == 0) {
+			dayParsed = 7;
+		}
 
-		Log.d("EventListFragment", "dayOfWeek: " + day);
+		Log.d("EventListFragment", "dayParsed: " + dayParsed);
 
-		return day;
+		return dayParsed;
 	}
 
 	@Override
@@ -91,9 +93,6 @@ public class EventListFragment extends ListFragment {
 		eventsEmpty = false;
 		
 		int testday = getDayOfWeekFromDatetoString(showtext_current);
-		Log.d("EventListFragment", "*****");
-		Log.d("EventListFragment", "dayOfWeek today: " + testday);
-		Log.d("EventListFragment", "*****");
 		// Tükeldan Date-tüüpi kuupäeva (yyyy-mm-dd) ära eraldi kolmeks
 		// stringiks.
 		dayOfWeek = testday;

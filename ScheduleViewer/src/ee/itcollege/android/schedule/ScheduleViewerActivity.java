@@ -107,7 +107,7 @@ public class ScheduleViewerActivity extends FragmentActivity {
 	
 	public String getWeekday (String current_date) {
 		int weekdayInNum = EventListFragment.getDayOfWeekFromDatetoString(EventListFragment.showtext_current);
-		String[] weekdays ={"p殄ap各v","esmasp各v", "teisip各v", "kolmap各v", "neljap各v", "reede", "laup各v"};
+		String[] weekdays ={"p殄ap各v","esmasp各v", "teisip各v", "kolmap各v", "neljap各v", "reede", "laup各v", "p殄ap各v"};
 		String weekday = "";
 		Log.d("ScheduleViewerActivity", "weekdayInNum: "
 				+ weekdayInNum);
