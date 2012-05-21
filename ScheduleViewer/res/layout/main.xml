@@ -12,9 +12,10 @@
     android:paddingBottom="5dip"
     android:paddingLeft="5dip"
     android:paddingRight="5dip"
-    android:background="#2E3436"
+    android:background="#3E3E3F"
     android:gravity="center|center_vertical"
     android:orientation="horizontal"
+    android:fadingEdgeLength="20dip"
     android:weightSum="1" >
 
     
@@ -78,7 +79,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:textSize="20dip"
+        android:textSize="17dip"
+        android:paddingTop="15dip"
         android:textColor="#4099FF"
         android:gravity="center|center_vertical" />          
    

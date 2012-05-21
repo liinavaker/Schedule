@@ -7,6 +7,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -15,6 +18,7 @@ public class ScheduleViewerActivity extends FragmentActivity {
 	public String showtext_current;
 	public static TextView showTextNoEvents;
 	public static Boolean firstTime = true;
+	private GestureDetector gestureDetector;
 
 	// public String showtext_previous = EventListFragment.showtext_previous;
 	// public String showtext_next = EventListFragment.showtext_next;
@@ -27,8 +31,8 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		int vahe = 0; // erinevus tŠnasest pŠevast
 		showtext_current = EventListFragment.getDate(vahe).toString();
 		EventListFragment.showtext_current = showtext_current;
-		Log.d("ScheduleViewerActivity", "TODAYshowtext_current: "
-				+ showtext_current);
+		
+		gestureDetector = new GestureDetector(new SwipeGestureDetector());
 
 		setContentView(R.layout.main);
 		showTextNoEvents = (TextView) findViewById(R.id.no_events);
@@ -46,6 +50,51 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		showNoEvents();
 		firstTime = false;
 	}
+
+	  private void onLeftSwipe() {
+		  Log.e("ScheduleViewerActivity", "onLeftSwipe");
+		  onPreviousDateClicked(null);
+		  }
+	  private void onRightSwipe() {
+		  Log.e("ScheduleViewerActivity", "onRightSwipe");
+		  onNextDateClicked(null);
+		  }
+	
+	  // Private class for gestures
+	  private class SwipeGestureDetector 
+	          extends SimpleOnGestureListener {
+	    // Swipe properties, you can change it to make the swipe 
+	    // longer or shorter and speed
+	    private static final int SWIPE_MIN_DISTANCE = 120;
+	    private static final int SWIPE_MAX_OFF_PATH = 200;
+	    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+
+	    @Override
+	    public boolean onFling(MotionEvent e1, MotionEvent e2,
+	                         float velocityX, float velocityY) {
+	      try {
+	        float diffAbs = Math.abs(e1.getY() - e2.getY());
+	        float diff = e1.getX() - e2.getX();
+
+	        if (diffAbs > SWIPE_MAX_OFF_PATH)
+	          return false;
+	        
+	        // Left swipe
+	        if (diff > SWIPE_MIN_DISTANCE
+	        && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+	           ScheduleViewerActivity.this.onLeftSwipe();
+
+	        // Right swipe
+	        } else if (-diff > SWIPE_MIN_DISTANCE
+	        && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+	        	ScheduleViewerActivity.this.onRightSwipe();
+	        }
+	      } catch (Exception e) {
+	        Log.e("ScheduleViewerActivity", "Error on gestures");
+	      }
+	      return false;
+	    }
+	  }
 	
 	public static void showNoEvents() {
 		if(EventListFragment.eventsEmpty) {

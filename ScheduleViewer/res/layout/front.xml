@@ -2,60 +2,106 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" 
     android:background="#6B6B6B"
-    android:padding="10dip">
+    android:orientation="vertical"
+    android:padding="10dip"
+    android:weightSum="1" >
 
-
+ <LinearLayout
+     android:layout_width="fill_parent"
+     android:layout_height="wrap_content"
+     android:layout_weight="0.4"
+     android:gravity="center"
+     android:orientation="vertical" >
+    
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingTop="70dip"
+        android:gravity="center"
+        android:contentDescription="logo"
         android:src="@drawable/ois" />
-    
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="20dip"
-        android:layout_gravity="center"
-        android:textSize="9pt"
-        android:text="@string/schoolName"
-        />
-    
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="10dip"
-        android:layout_gravity="center"
-        android:textSize="9pt"
-        android:text="tunniplaan"
-        />
 
+ </LinearLayout>
+ 
+ <LinearLayout
+     android:layout_width="fill_parent"
+     android:layout_height="wrap_content"
+     android:layout_weight="0.6"
+     android:orientation="vertical"
+     android:gravity="center"
+     android:weightSum="1" >
     
-    <LinearLayout 
- 	    android:layout_width="fill_parent"
-    	android:layout_height="fill_parent"
-		android:orientation="horizontal"
-		android:paddingTop="20dip" 
-        android:weightSum="1">
+     
+     <LinearLayout
+     android:layout_width="fill_parent"
+     android:layout_height="wrap_content"
+     android:layout_weight="0.3"
+     android:gravity="center_horizontal|bottom"
+     android:orientation="vertical" >
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.5"
-        android:text="Tudeng"
-        android:textSize="8pt"
-        />
-        
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.5"
-        android:text="Button" />
+         <TextView
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="@string/schoolName"
+             android:gravity="center_horizontal"
+             android:textSize="30dip" />
     
+    </LinearLayout>
+     <LinearLayout
+     android:layout_width="fill_parent"
+     android:layout_height="wrap_content"
+     android:layout_weight="0.3"
+     android:gravity="center_horizontal"
+     android:layout_gravity="top"
+     android:orientation="vertical" >
+
+         <TextView
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:gravity="center_horizontal"
+             android:text="tunniplaan"
+             android:textSize="25dip" />
+
+    </LinearLayout>
+     <LinearLayout
+     android:layout_width="fill_parent"
+     android:layout_height="wrap_content"
+     android:layout_weight="0.4"
+     android:paddingRight="10dip"
+     android:paddingLeft="10dip"
+     android:orientation="vertical" >
+
+         	    <LinearLayout 
+	 	    android:layout_width="fill_parent"
+	    	android:layout_height="wrap_content"
+			android:orientation="horizontal"
+	        android:weightSum="1">
+	
+	    <TextView
+	        android:layout_width="0dip"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="0.3"
+	        android:text="Tudeng"
+	        android:gravity="right|bottom"
+	        android:paddingRight="10dip"
+	        android:textSize="20dip"
+	        />
+	    
+	    <AutoCompleteTextView 
+	        android:layout_width="0dip"
+	        android:layout_height="wrap_content"
+	        android:maxLines="2"
+	        android:layout_weight="0.7"/>
+	    	        
+		</LinearLayout>
+			    <CheckBox
+        android:id="@+id/chkIos"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Jäta mind meelde" />
+         	    
+		</LinearLayout>
 	</LinearLayout>
 </LinearLayout>
 
