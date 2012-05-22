@@ -71,6 +71,7 @@
 											                android:id="@+id/userID"
 											                android:layout_width="0dip"
 											                android:layout_height="wrap_content"
+											                android:inputType="number"
 											                android:layout_weight="0.8"
 											                android:maxLines="1" />
 											
@@ -85,7 +86,7 @@
 							</LinearLayout>
 
         <CheckBox
-            android:id="@+id/chkIos"
+            android:id="@+id/rememberMe"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Jäta mind meelde" />
