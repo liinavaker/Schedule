@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-public class EventAdapter extends BaseAdapter {
+public 	class EventAdapter extends BaseAdapter {
 
 	private Context context;
 	private List<Event> events;

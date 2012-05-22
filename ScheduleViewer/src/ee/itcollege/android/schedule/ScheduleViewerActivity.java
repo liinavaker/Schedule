@@ -2,7 +2,9 @@ package ee.itcollege.android.schedule;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,28 +12,30 @@ import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 public class ScheduleViewerActivity extends FragmentActivity {
 	public static Context context;
-	public String showtext_current;
+	public static String showtext_current;
 	public static TextView showTextNoEvents;
 	public static Boolean firstTime = true;
 	File sdcard = Environment.getExternalStorageDirectory();
 	File dir = new File(sdcard.getAbsolutePath() + "/Schedule");
 	private static final int REFRESH_CURRENT_DAY_MENU_ITEM = Menu.FIRST;
 	private static final int REFRESH_ALL_MENU_ITEM = REFRESH_CURRENT_DAY_MENU_ITEM + 1;
-
+	
+	public static boolean refresh = false;
+	public static boolean deleteAll = false; 
+	public static String resultToShowEventsFromJSON = null;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
 		int vahe = 0; // erinevus tänasest päevast
-		showtext_current = EventListFragment.getDate(vahe).toString();
-		EventListFragment.showtext_current = showtext_current;
+		showtext_current = getDate(vahe).toString();
 		
 	//	gestureDetector = new GestureDetector(new SwipeGestureDetector());
 
@@ -40,7 +44,6 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		TextView currently_shown_schedule;
 		currently_shown_schedule = (TextView) findViewById(R.id.currently_shown_schedule);
 		context = currently_shown_schedule.getContext();
-		EventListFragment.context = context;
 		String estonianDate = parseDateIntoEstonian(showtext_current);
 		currently_shown_schedule.setText(estonianDate);
 		
@@ -50,6 +53,15 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		
 		showNoEvents();
 		firstTime = false;
+	}
+	
+	public Date getDate(int vahe) {
+		// Get today as a Calendar
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, vahe);
+		// Make an SQL Date out of that
+		java.sql.Date date = new java.sql.Date(cal.getTimeInMillis());
+		return date;
 	}
 
 	// TODO: onLeftSwipe ja onRightSwipe näitavad vastavalt eelmise ja järgmine päeva tunniplaani. 
@@ -98,29 +110,52 @@ public class ScheduleViewerActivity extends FragmentActivity {
 	  }
 */	
 	
-	  public static void showNoEvents() {
-		if(EventListFragment.eventsEmpty) {
+	public void showNoEvents() {
+		EventListFragment fragment = getFragment();
+		if(fragment.eventsEmpty) {
 			showTextNoEvents.setText("Pole ühtegi sündmust");
 			showTextNoEvents.setVisibility(View.VISIBLE);
-		} if (!EventListFragment.eventsEmpty) {
+			Log.d("ScheduleViewActivity", "eventsEmtpy: true");
+			
+		} if (!fragment.eventsEmpty) {
 			showTextNoEvents.setVisibility(View.GONE);
+			Log.d("ScheduleViewActivity", "eventsEmtpy: false");
 		}
+		fragment.eventsEmpty = false;
+	}
+	
+	public static int getDayOfWeekFromDatetoString(String date) {
+		// Tükeldan Date-tüüpi kuupäeva (yyyy-mm-dd) ära eraldi kolmeks
+		// stringiks.
+		String[] tokens = date.split("-");
+		int yyyy = Integer.parseInt(tokens[0]);
+		String mm = tokens[1];
+		int dd = Integer.parseInt(tokens[2]);
+
+		Calendar calendar = new GregorianCalendar(yyyy,
+				Integer.parseInt(mm) - 1, dd);
+		int day = calendar.get(Calendar.DAY_OF_WEEK);
+		int dayParsed = day;
+
+		if (Integer.toString(day).equals("0")) {
+			dayParsed = 7;
+		} else
+			dayParsed = day - 1;
+		if (dayParsed == 0) {
+			dayParsed = 7;
+		}
+
+		Log.d("EventListFragment", "dayParsed: " + dayParsed);
+
+		return dayParsed;
 	}
 	
 	public String getWeekday (String current_date) {
-		int weekdayInNum = EventListFragment.getDayOfWeekFromDatetoString(EventListFragment.showtext_current);
+		int weekdayInNum = getDayOfWeekFromDatetoString(showtext_current);
 		String[] weekdays ={"pühapäev","esmaspäev", "teisipäev", "kolmapäev", "neljapäev", "reede", "laupäev", "pühapäev"};
-		String weekday = "";
 		Log.d("ScheduleViewerActivity", "weekdayInNum: "
 				+ weekdayInNum);
-		for(int i = 0; i < weekdays.length; i++) {
-			if(weekdayInNum == i){
-				weekday = weekdays[i];
-			}
-		}
-		Log.d("ScheduleViewerActivity", "weekday: "
-				+ weekday);
-		return weekday;
+		return weekdays[weekdayInNum];
 	}
 	
 	public String parseDateIntoEstonian(String date) {
@@ -162,9 +197,10 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		String yesterday_string = EventListFragment.getDate(-1).toString(); 
-		String today_string = EventListFragment.getDate(0).toString();
-		String tomorrow_string = EventListFragment.getDate(+1).toString(); 
+		
+		String yesterday_string = getDate(-1).toString(); 
+		String today_string = getDate(0).toString();
+		String tomorrow_string = getDate(+1).toString(); 
 		String ifclose = "";
 		Date yesterday = null;
 		try {
@@ -196,16 +232,19 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		return ifclose;
 	}
 	
+	private EventListFragment getFragment() {
+		return (EventListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_event_list);
+	}
+	
 	public void onNextDateClicked(View view) {
-		EventListFragment.onNextDateClicked = true;
-		EventListFragment fragment = (EventListFragment) getSupportFragmentManager()
-				.findFragmentById(R.id.fragment_event_list);
-		EventListFragment.getNextDateSchedule();
+		EventListFragment fragment = this.getFragment();
+		fragment.onNextDateClicked = true;
+		fragment.getNextDateSchedule();
 		fragment.onAttach(getParent());
 				
 		TextView currently_shown_schedule = (TextView) findViewById(R.id.currently_shown_schedule);
-		String estonianDate = parseDateIntoEstonian(EventListFragment.showtext_current);
-		String date = EventListFragment.showtext_current;
+		String estonianDate = parseDateIntoEstonian(showtext_current);
+		String date = showtext_current;
 		currently_shown_schedule.setText(estonianDate);
 		
 		TextView weekday = (TextView) findViewById(R.id.weekday);
@@ -215,16 +254,15 @@ public class ScheduleViewerActivity extends FragmentActivity {
 	}
 
 	public void onPreviousDateClicked(View view) {
-		EventListFragment.onNextDateClicked = false;
-		EventListFragment fragment = (EventListFragment) getSupportFragmentManager()
-				.findFragmentById(R.id.fragment_event_list);
-		EventListFragment.getPreviousDateSchedule();
+		EventListFragment fragment = this.getFragment();
+		fragment.onNextDateClicked = false;
+		fragment.getPreviousDateSchedule();
 		fragment.onAttach(getParent());
 		
 		TextView currently_shown_schedule;
 		currently_shown_schedule = (TextView) findViewById(R.id.currently_shown_schedule);
-		String estonianDate = parseDateIntoEstonian(EventListFragment.showtext_current);
-		String date = EventListFragment.showtext_current;
+		String estonianDate = parseDateIntoEstonian(showtext_current);
+		String date = showtext_current;
 		currently_shown_schedule.setText(estonianDate);		
 		
 		TextView weekday = (TextView) findViewById(R.id.weekday);
@@ -242,37 +280,22 @@ public class ScheduleViewerActivity extends FragmentActivity {
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		EventListFragment fragment = getFragment();
+		refresh = true;
 		Log.d("ScheduleViewerActivity", "onOptionsItemSelected");
 		switch (item.getItemId()) {
 		case REFRESH_CURRENT_DAY_MENU_ITEM:
 			Log.d("ScheduleViewerActivity", "case REFRESH_MENU_ITEM");
+			deleteAll = false;
+			fragment.getSearchResults();
 			break;
 		case REFRESH_ALL_MENU_ITEM:
 			Log.d("ScheduleViewerActivity", "case REFRESH_ALL_MENU_ITEM");
+			deleteAll = true;
+			fragment.getSearchResults();
 			break;
 		}
 		return super.onOptionsItemSelected(item);
-	}
-	
-	/*
-	public boolean onOptionsItemSelected (MenuItem item) {
-		File[] filelist = dir.listFiles();
-		Log.d("ScheduleViewerActivity", "onOptionsItemSelected");
-		//userID + "_" + showtext_current + ".json";
-		
-		for(int i = 0; i < filelist.length; i++) {
-			if(filelist[i].toString().startsWith(EventListFragment.userID)) {
-				Log.d("ScheduleViewerActivity", "Starts with " + EventListFragment.userID + " - " + filelist[i].toString());
-			}		
-		}
-	
-		switch (item.getItemId()) {
-		case R.id.refresh:
-			
-			break;
-		}
-		return super.onOptionsItemSelected(item);
-		
-	}
-	*/
+	}		
 }
+	

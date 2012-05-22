@@ -14,12 +14,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -30,22 +31,21 @@ import android.support.v4.app.ListFragment;
 import android.util.Log;
 
 public class EventListFragment extends ListFragment {
-	public static ArrayList<Event> events = new ArrayList<Event>();
 
-
+	// Seadistatakse väljaspool klassi, ilma instantsi loomata
 	public static String userID = "";
-	// public int aasta;
-	// public int kuu;
-	// public int kuupaev;
-	public static String showtext_current;
-	public static String showtext_previous;
-	public static String showtext_next;
-	public static boolean onNextDateClicked = false;
-	public static int dayOfWeek; // valitud kuupäeva nädalapäev. Nt 2012-05-18
-									// -> 5 (ehk reede)
-	public static Activity activity;
-	public static Context context = ScheduleViewerActivity.context;
-	public static boolean eventsEmpty = false;
+
+	public ArrayList<Event> events = new ArrayList<Event>();
+	public String showtext_previous;
+	public String showtext_next;
+	public boolean onNextDateClicked = false;
+	public int dayOfWeek; // valitud kuupäeva nädalapäev. Nt 2012-05-18
+							// -> 5 (ehk reede)
+	public Context context = ScheduleViewerActivity.context;
+	public boolean eventsEmpty = false;
+	File sdcard = Environment.getExternalStorageDirectory();
+	File dir = new File(sdcard.getAbsolutePath() + "/Schedule");
+
 	public int getWeekdayOfToday() {
 		// tänane nädalapäev numbrites
 		Calendar cal = Calendar.getInstance();
@@ -58,47 +58,20 @@ public class EventListFragment extends ListFragment {
 		return today;
 	}
 
-	public static int getDayOfWeekFromDatetoString(String date) {
-
-		// Tükeldan Date-tüüpi kuupäeva (yyyy-mm-dd) ära eraldi kolmeks
-		// stringiks.
-		String[] tokens = date.split("-");
-		int yyyy = Integer.parseInt(tokens[0]);
-		String mm = tokens[1];
-		int dd = Integer.parseInt(tokens[2]);
-
-		Calendar calendar = new GregorianCalendar(yyyy,
-				Integer.parseInt(mm) - 1, dd);
-		int day = calendar.get(Calendar.DAY_OF_WEEK);
-		int dayParsed = day;
-		
-		if (Integer.toString(day).equals("0")) {
-			dayParsed = 7;
-		} else
-			dayParsed = day - 1;
-		if(dayParsed == 0) {
-			dayParsed = 7;
-		}
-
-		Log.d("EventListFragment", "dayParsed: " + dayParsed);
-
-		return dayParsed;
-	}
-
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		eventsEmpty = false;
-		
-		int testday = getDayOfWeekFromDatetoString(showtext_current);
+		int testday = ScheduleViewerActivity
+				.getDayOfWeekFromDatetoString(ScheduleViewerActivity.showtext_current);
 		// Tükeldan Date-tüüpi kuupäeva (yyyy-mm-dd) ära eraldi kolmeks
 		// stringiks.
 		dayOfWeek = testday;
 		getSearchResults();
-	} 
+	}
 
-	public static void getPreviousDateSchedule() {
-		String currentDate = showtext_current;
+	public void getPreviousDateSchedule() {
+		String currentDate = ScheduleViewerActivity.showtext_current;
 		String[] tokens = currentDate.split("-");
 		int yyyy = Integer.parseInt(tokens[0]);
 		String mm = tokens[1];
@@ -108,13 +81,11 @@ public class EventListFragment extends ListFragment {
 		cal.add(Calendar.DATE, -1);
 		// Make an SQL Date out of that
 		java.sql.Date previousDate = new java.sql.Date(cal.getTimeInMillis());
-		Log.d("EventListFragment", "getDate tulemus: " + previousDate);
-		showtext_current = previousDate.toString();
+		ScheduleViewerActivity.showtext_current = previousDate.toString();
 	}
 
-	public static void getNextDateSchedule() {
-		Log.d("EventListFragment", "TextView showTextNoEvents: " +ScheduleViewerActivity.showTextNoEvents);
-		String currentDate = showtext_current;
+	public void getNextDateSchedule() {
+		String currentDate = ScheduleViewerActivity.showtext_current;
 		String[] tokens = currentDate.split("-");
 		int yyyy = Integer.parseInt(tokens[0]);
 		String mm = tokens[1];
@@ -124,41 +95,30 @@ public class EventListFragment extends ListFragment {
 		cal.add(Calendar.DATE, +1);
 		// Make an SQL Date out of that
 		java.sql.Date nextDate = new java.sql.Date(cal.getTimeInMillis());
-		Log.d("EventListFragment", "getDate tulemus: " + nextDate);
-		showtext_current = nextDate.toString();
-	}
-
-	public static Date getDate(int vahe) {
-		// Get today as a Calendar
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DATE, vahe);
-		// Make an SQL Date out of that
-		java.sql.Date date = new java.sql.Date(cal.getTimeInMillis());
-		Log.d("EventListFragment", "getDate tulemus: " + date);
-		return date;
+		ScheduleViewerActivity.showtext_current = nextDate.toString();
 	}
 
 	private boolean fileExists() {
 		Log.d("EventListFragment", "fileExists()");
 		File sdcard = Environment.getExternalStorageDirectory();
 		File dir = new File(sdcard.getAbsolutePath() + "/Schedule");
-		Log.d("EventListFragment", "dir: " +dir);
-		
+		Log.d("EventListFragment", "dir: " + dir);
+
 		File file = new File(dir, filename());
-		Log.d("EventListFragment", "file: " +file);
-		Log.d("EventListFragment", "fileExists: " +file.exists());
+		Log.d("EventListFragment", "file: " + file);
+		Log.d("EventListFragment", "fileExists: " + file.exists());
 		return file.exists();
 	}
 
-	public static String filename() {
-		return userID + "_" + showtext_current + ".json";
+	public String filename() {
+		return userID + "_" + ScheduleViewerActivity.showtext_current + ".json";
 	}
 
-	private void writeToSDCard(String result) throws IOException {
+	public void writeToSDCard(String result) throws IOException {
 		if ((null == result) || (0 == result.length())) {
 			return; // will not write empty file
 		}
-		
+
 		Log.d("EventListFragment", "writeToSDCard: result: " + result);
 		File sdcard = Environment.getExternalStorageDirectory();
 		File dir = new File(sdcard.getAbsolutePath() + "/Schedule");
@@ -186,20 +146,25 @@ public class EventListFragment extends ListFragment {
 	}
 
 	public void getSearchResults() {
-		if (!fileExists()) {
+		if (ScheduleViewerActivity.refresh) {
 			downloadFile();
 		} else {
-			try {
-				String result = readFile();
-				showEventsFromJSON(result);
-			} catch(Exception e) {
-			//	 showAlert("Error", e.getMessage());
+			if (!fileExists()) {
+				downloadFile();
+			} else {
+				try {
+					String result = readFile();
+					showEventsFromJSON(result);
+				} catch (Exception e) {
+					// showAlert("Error", e.getMessage());
+				}
 			}
 		}
 	}
 
-	public static void showAlert(String title, String message) {
-		AlertDialog dialog = new AlertDialog.Builder(context).create();
+	public void showAlert(String title, String message) {
+
+		AlertDialog dialog = new AlertDialog.Builder(getActivity()).create();
 		dialog.setTitle(title);
 		dialog.setMessage(message);
 		dialog.setButton("OK", new DialogInterface.OnClickListener() {
@@ -211,27 +176,43 @@ public class EventListFragment extends ListFragment {
 	}
 
 	private void downloadFile() {
-		Log.d("EventListFragment", "downloadFile");
-		Log.d("EventListFragment", "UserID: " + userID);
 		try {
 			URL url = new URL(
 					"https://itcollege.ois.ee/schedule?&format=json&student_id="
-							+ URLEncoder.encode(userID) + "&date="
-							+ URLEncoder.encode(showtext_current));
+							+ URLEncoder.encode(userID)
+							+ "&date="
+							+ URLEncoder
+									.encode(ScheduleViewerActivity.showtext_current));
 			new GetUrlContents().execute(url);
-			Log.d("getUserTimetable", "url: " + url);
 		} catch (Exception e) {
-	//		showAlert("Error", e.getMessage());
+			// showAlert("Error", e.getMessage());
 		}
 	}
-	
-	public static JSONObject parseJSON(String result) {
+
+	public JSONObject parseJSON(String result) {
+		Log.d("EventListFragment", "parseJSON result: " + result);
 		JSONObject json = null;
-		if(result.length() == 0){
-			Log.d("EventListFragment", "parseJSON: result.length() == 0 ");			
+		if (result.length() == 0) {
+			Log.d("EventListFragment", "parseJSON: result.length() == 0 ");
 			return json;
 		}
-			
+		if (result.equals("[]")) {
+			Log.d("EventListFragment", "1" + result);
+			ScheduleViewerActivity sva = (ScheduleViewerActivity) getActivity();
+			eventsEmpty = true;
+			sva.showNoEvents();
+			return json;
+		} 
+		if(result.contains("Kasutaja toimingu tõrge")){
+			Log.d("EventListFragment", "KASUTAJA TOIMINGU TÕRGE");
+			showAlert("Tõrge", "Sellisele ID-le vastet ei leidu");
+			if (onNextDateClicked) {
+				getPreviousDateSchedule();
+			} else {
+				getNextDateSchedule();
+			}
+		}
+
 		try {
 			Log.d("EventListFragment", "parseJSON: TRY");
 			json = new JSONObject(result);
@@ -314,7 +295,7 @@ public class EventListFragment extends ListFragment {
 									Log.d("requestComplete", "lecturer: "
 											+ lecturer);
 
-										String frequency = description
+									String frequency = description
 											.getString("Sagedus");
 									event.setFrequency(frequency);
 									Log.d("requestComplete", "frequency: "
@@ -337,67 +318,71 @@ public class EventListFragment extends ListFragment {
 													+ events.size());
 
 								}
-							} 
+							
+							}
 						}
 					}
-				}
+				} 
 			}
-			if(events.size() == 0) {
+			if (events.size() == 0 || result.equalsIgnoreCase("[]")) {
+				ScheduleViewerActivity sva = (ScheduleViewerActivity) getActivity();
 				eventsEmpty = true;
-				Log.d("EventListFragment", "FirstTime: " +ScheduleViewerActivity.firstTime);
-				if(ScheduleViewerActivity.firstTime == false) {
-				ScheduleViewerActivity.showNoEvents();
-				Log.d("EventListFragment", "IF SEES ||FirstTime: " +ScheduleViewerActivity.firstTime);
-				}
-			} if (events.size() != 0) {
-				Log.d("EventListFragment", "FIRST events.size() != 0");
+				sva.showNoEvents();
+			}
+			else {
+				Log.d("EventListFragment", "parseJSON. events.size =" + events.size());
 				eventsEmpty = false;
-				if(ScheduleViewerActivity.firstTime == false) { 
-				Log.d("EventListFragment", "IF SEES ||FirstTime: " +ScheduleViewerActivity.firstTime);
-				ScheduleViewerActivity.showNoEvents();
-				}
+				ScheduleViewerActivity sva = (ScheduleViewerActivity) getActivity();
+				sva.showNoEvents();
 			}
 			
+
 		} catch (JSONException e) {
-//			showAlert("Error", e.getMessage());
+			// showAlert("Error", e.getMessage());
 		}
 		return json;
 	}
 
-	private void requestComplete(String result) {
-		Log.d("EventListFragment", "requestComplete()");
+	public void requestComplete(String result) {
 		try {
 			writeToSDCard(result);
 		} catch (IOException e) {
-//			showAlert("Error", e.getMessage());
+			// showAlert("Error", e.getMessage());
 		}
 		showEventsFromJSON(result);
 	}
 
 	private void showEventsFromJSON(String result) {
-		Log.d("EventListFragment", "Test: showEventsFromJSON");
-		Log.d("EventListFragment", "Array events suurus: " +events.size());
 		events.clear();
+		 
+		if (result.equalsIgnoreCase("[]") && !ScheduleViewerActivity.firstTime) {
+			ScheduleViewerActivity sva = (ScheduleViewerActivity) getActivity();
+			eventsEmpty = true;
+			sva.showNoEvents();
+			parseJSON("");
+		} else {
 		parseJSON(result);
-		EventAdapter adapter = new EventAdapter(getActivity());
+		}
 		compareEvents();
+		EventAdapter adapter = new EventAdapter(getActivity());
 		adapter.setEvents(events);
 		setListAdapter(adapter);
+		ScheduleViewerActivity.refresh = false;
+		
 	}
 
-	public static void compareEvents() {
+	public void compareEvents() {
 		Collections.sort(events, new Comparator<Event>() {
 			public int compare(Event s1, Event s2) {
 				return s1.getStartDate().compareToIgnoreCase(s2.getStartDate());
 			}
-		});		
+		});
 	}
 
 	private class GetUrlContents extends AsyncTask<URL, Void, String> {
-		
+
 		@Override
 		protected String doInBackground(URL... params) {
-			Log.d("EventListFragment", "GetUrlContents");
 			StringBuilder sb = new StringBuilder();
 
 			try {
@@ -408,7 +393,6 @@ public class EventListFragment extends ListFragment {
 						new InputStreamReader(connection.getInputStream()));
 
 				String line;
-				Log.d("GetUrlContents", "@GetUrlContents TRY");
 				while ((line = reader.readLine()) != null) {
 					sb.append(line);
 				}
@@ -416,7 +400,7 @@ public class EventListFragment extends ListFragment {
 				connection.disconnect();
 
 			} catch (IOException e) {
-//				showAlert("Error", e.getMessage());
+				// showAlert("Error", e.getMessage());
 			}
 			return sb.toString();
 		}
@@ -424,16 +408,45 @@ public class EventListFragment extends ListFragment {
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-			if(result.length() == 0) {
-				showAlert("Ühenduse viga", "Tunniplaani kuvamine ebaõnnestus. Palun kontrolli seadme Interneti ühendust.");
-				if(onNextDateClicked) {
-				getPreviousDateSchedule();
+			if (result.length() == 0 || result == null) {
+				showAlert("Ühenduse viga",
+						"Tunniplaani kuvamine ebaõnnestus. Palun kontrolli seadme Interneti ühendust.");
+				if (onNextDateClicked) {
+					getPreviousDateSchedule();
 				} else {
 					getNextDateSchedule();
 				}
-					
+
+			}
+
+			if (result == "[]") {
+				eventsEmpty = true;
+				if (ScheduleViewerActivity.firstTime == false) {
+					ScheduleViewerActivity sva = (ScheduleViewerActivity) getActivity();
+					sva.showNoEvents();
+					Log.d("EventListFragment", "IF SEES ||FirstTime: "
+							+ ScheduleViewerActivity.firstTime);
+				}
 			}
 			Log.d("EventListFragment", "onPostExecute @result: " + result);
+			if (ScheduleViewerActivity.refresh) {
+				File[] filelist = dir.listFiles();
+				String fileformat = userID + "_"
+						+ ScheduleViewerActivity.showtext_current + ".json";
+				if (ScheduleViewerActivity.deleteAll) {
+					for (int i = 0; i < filelist.length; i++) {
+						if (filelist[i].toString().endsWith(".json")) {
+							filelist[i].delete();
+						}
+					}
+				} else {
+					for (int i = 0; i < filelist.length; i++) {
+						if (filelist[i].toString() == fileformat) {
+							filelist[i].delete();
+						}
+					}
+				}
+			}
 			requestComplete(result);
 		}
 	}

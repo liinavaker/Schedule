@@ -81,7 +81,7 @@
         android:textStyle="bold"
         android:textSize="17dip"
         android:paddingTop="15dip"
-        android:textColor="#4099FF"
+        android:textColor="#7EBB13"
         android:gravity="center|center_vertical" />          
    
    
@@ -90,5 +90,5 @@
         android:layout_width="match_parent"
         android:cacheColorHint="#EBEBEB"
         android:layout_height="match_parent" />
-
+ 
 </LinearLayout>

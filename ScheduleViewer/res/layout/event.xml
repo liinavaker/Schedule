@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:textSize="15dip"
-        android:textColor="#4099FF" />
+        android:textColor="#7EBB13" />
    
     <TextView
         android:id="@+id/event_date"
