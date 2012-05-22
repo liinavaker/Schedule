@@ -28,8 +28,6 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 public class EventListFragment extends ListFragment {
 	public static ArrayList<Event> events = new ArrayList<Event>();
@@ -152,7 +150,7 @@ public class EventListFragment extends ListFragment {
 		return file.exists();
 	}
 
-	private String filename() {
+	public static String filename() {
 		return userID + "_" + showtext_current + ".json";
 	}
 
@@ -316,13 +314,7 @@ public class EventListFragment extends ListFragment {
 									Log.d("requestComplete", "lecturer: "
 											+ lecturer);
 
-									// String timePeriod = description
-									// .getString("Periood");
-									// event.setTimePeriod(timePeriod);
-									// Log.d("requestComplete", "timePeriod: "
-									// + timePeriod);
-
-									String frequency = description
+										String frequency = description
 											.getString("Sagedus");
 									event.setFrequency(frequency);
 									Log.d("requestComplete", "frequency: "

@@ -1,15 +1,17 @@
 package ee.itcollege.android.schedule;
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
-import android.view.MotionEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,12 +20,11 @@ public class ScheduleViewerActivity extends FragmentActivity {
 	public String showtext_current;
 	public static TextView showTextNoEvents;
 	public static Boolean firstTime = true;
-	private GestureDetector gestureDetector;
+	File sdcard = Environment.getExternalStorageDirectory();
+	File dir = new File(sdcard.getAbsolutePath() + "/Schedule");
+	private static final int REFRESH_CURRENT_DAY_MENU_ITEM = Menu.FIRST;
+	private static final int REFRESH_ALL_MENU_ITEM = REFRESH_CURRENT_DAY_MENU_ITEM + 1;
 
-	// public String showtext_previous = EventListFragment.showtext_previous;
-	// public String showtext_next = EventListFragment.showtext_next;
-
-	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -32,7 +33,7 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		showtext_current = EventListFragment.getDate(vahe).toString();
 		EventListFragment.showtext_current = showtext_current;
 		
-		gestureDetector = new GestureDetector(new SwipeGestureDetector());
+	//	gestureDetector = new GestureDetector(new SwipeGestureDetector());
 
 		setContentView(R.layout.main);
 		showTextNoEvents = (TextView) findViewById(R.id.no_events);
@@ -51,7 +52,8 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		firstTime = false;
 	}
 
-	  private void onLeftSwipe() {
+	// TODO: onLeftSwipe ja onRightSwipe näitavad vastavalt eelmise ja järgmine päeva tunniplaani. 
+/*	  private void onLeftSwipe() {
 		  Log.e("ScheduleViewerActivity", "onLeftSwipe");
 		  onPreviousDateClicked(null);
 		  }
@@ -59,8 +61,7 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		  Log.e("ScheduleViewerActivity", "onRightSwipe");
 		  onNextDateClicked(null);
 		  }
-	
-	  // Private class for gestures
+	  
 	  private class SwipeGestureDetector 
 	          extends SimpleOnGestureListener {
 	    // Swipe properties, you can change it to make the swipe 
@@ -95,8 +96,9 @@ public class ScheduleViewerActivity extends FragmentActivity {
 	      return false;
 	    }
 	  }
+*/	
 	
-	public static void showNoEvents() {
+	  public static void showNoEvents() {
 		if(EventListFragment.eventsEmpty) {
 			showTextNoEvents.setText("Pole ühtegi sündmust");
 			showTextNoEvents.setVisibility(View.VISIBLE);
@@ -158,7 +160,6 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		try {
 			datecurrentlyshown = formatter.parse(date);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		String yesterday_string = EventListFragment.getDate(-1).toString(); 
@@ -169,28 +170,21 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		try {
 			yesterday = formatter.parse(yesterday_string);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Date today = null;
 		try {
 			today = formatter.parse(today_string);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Date tomorrow = null;
 		try {
 			tomorrow = formatter.parse(tomorrow_string);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		Log.d("ScheduleViewerActivity", "datecurrentlyshown: " +datecurrentlyshown);
-		Log.d("ScheduleViewerActivity", "yesterday: " +yesterday);
-		Log.d("ScheduleViewerActivity", "today: " +today);
-		Log.d("ScheduleViewerActivity", "tomorrow: " +tomorrow);
 		if(datecurrentlyshown.equals(yesterday)){
 			ifclose = "eile";
 		} if(datecurrentlyshown.equals(today)) {
@@ -198,10 +192,9 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		} if(datecurrentlyshown.equals(tomorrow)) {
 			ifclose = "homme";
 		} 
-		Log.d("ScheduleViewerActivity", "ifclose: " +ifclose);
+
 		return ifclose;
 	}
-	
 	
 	public void onNextDateClicked(View view) {
 		EventListFragment.onNextDateClicked = true;
@@ -237,19 +230,49 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		TextView weekday = (TextView) findViewById(R.id.weekday);
 		String weekdayString = getWeekday(date);
 		weekday.setText(weekdayString);
-
 	}
 	
-
+	public boolean onCreateOptionsMenu(Menu menu){
+		
+		menu.add(0, REFRESH_CURRENT_DAY_MENU_ITEM, 0, "Värskenda käesoleva päeva sündmuseid");
+		menu.add(0, REFRESH_ALL_MENU_ITEM, 0, "Värskenda kõiki sündmuseid");
+		
+		return super.onCreateOptionsMenu(menu);
+		}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Log.d("ScheduleViewerActivity", "onOptionsItemSelected");
+		switch (item.getItemId()) {
+		case REFRESH_CURRENT_DAY_MENU_ITEM:
+			Log.d("ScheduleViewerActivity", "case REFRESH_MENU_ITEM");
+			break;
+		case REFRESH_ALL_MENU_ITEM:
+			Log.d("ScheduleViewerActivity", "case REFRESH_ALL_MENU_ITEM");
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
 	/*
-	 * static String meetodMidaTahadValjaKutsuda(String
-	 * numericalStudentIDstring) { Object studentID = numericalStudentIDstring;
-	 * String ID = studentID.toString(); // TODO: add try parse in case user //
-	 * enters something else instead on // numerical ID String URI =
-	 * ("https://itcollege.ois.ee/et/schedule?&format=json&student_id=" + ID);
-	 * //$NON-NLS-1$ // creating hardwired JSON data URL. not nice. return URI;
-	 * // TODO Auto-generated method stub
-	 * 
-	 * }
-	 */
+	public boolean onOptionsItemSelected (MenuItem item) {
+		File[] filelist = dir.listFiles();
+		Log.d("ScheduleViewerActivity", "onOptionsItemSelected");
+		//userID + "_" + showtext_current + ".json";
+		
+		for(int i = 0; i < filelist.length; i++) {
+			if(filelist[i].toString().startsWith(EventListFragment.userID)) {
+				Log.d("ScheduleViewerActivity", "Starts with " + EventListFragment.userID + " - " + filelist[i].toString());
+			}		
+		}
+	
+		switch (item.getItemId()) {
+		case R.id.refresh:
+			
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+		
+	}
+	*/
 }

@@ -1,0 +1,9 @@
+<menu xmlns:android="https://schemas.android.com/apk/res/android">
+
+<item android:id="@+id/REFRESH_CURRENT_DAY_MENU_ITEM" 
+    android:title="Värskenda käesoleva päeva sündmuseid" />
+
+<item android:id="@+id/REFRESH_ALL_MENU_ITEM" 
+    android:title="Värskenda kõiki sündmuseid" />
+
+</menu>
