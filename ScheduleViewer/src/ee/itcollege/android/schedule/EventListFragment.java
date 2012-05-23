@@ -16,16 +16,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v4.app.ListFragment;
@@ -33,7 +30,6 @@ import android.util.Log;
 
 public class EventListFragment extends ListFragment {
 
-	// Seadistatakse väljaspool klassi, ilma instantsi loomata
 	public static String userID = "";
 	public boolean finish = false;
 	public ArrayList<Event> events = new ArrayList<Event>();
@@ -119,7 +115,6 @@ public class EventListFragment extends ListFragment {
 		if ((null == result) || (0 == result.length())) {
 			return; // will not write empty file
 		}
-
 		Log.d("EventListFragment", "writeToSDCard: result: " + result);
 		File sdcard = Environment.getExternalStorageDirectory();
 		File dir = new File(sdcard.getAbsolutePath() + "/Schedule");
@@ -170,7 +165,7 @@ public class EventListFragment extends ListFragment {
 		dialog.setMessage(message);
 		dialog.setButton("OK", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
-				if(finish) {
+				if (finish) {
 					ScheduleViewerActivity sva = (ScheduleViewerActivity) getActivity();
 					sva.finish();
 					finish = false;
@@ -208,8 +203,8 @@ public class EventListFragment extends ListFragment {
 			eventsEmpty = true;
 			sva.showNoEvents();
 			return json;
-		} 
-		if(result.contains("Kasutaja toimingu tõrge")){
+		}
+		if (result.contains("Kasutaja toimingu tõrge")) {
 			Log.d("EventListFragment", "KASUTAJA TOIMINGU TÕRGE");
 			finish = true;
 			showAlert("Tõrge", "Sellisele ID-le vastet ei leidu");
@@ -325,24 +320,22 @@ public class EventListFragment extends ListFragment {
 													+ events.size());
 
 								}
-							
 							}
 						}
 					}
-				} 
+				}
 			}
 			if (events.size() == 0 || result.equalsIgnoreCase("[]")) {
 				ScheduleViewerActivity sva = (ScheduleViewerActivity) getActivity();
 				eventsEmpty = true;
 				sva.showNoEvents();
-			} 
-			else {
-				Log.d("EventListFragment", "parseJSON. events.size =" + events.size());
+			} else {
+				Log.d("EventListFragment",
+						"parseJSON. events.size =" + events.size());
 				eventsEmpty = false;
 				ScheduleViewerActivity sva = (ScheduleViewerActivity) getActivity();
 				sva.showNoEvents();
 			}
-			
 
 		} catch (JSONException e) {
 			// showAlert("Error", e.getMessage());
@@ -361,25 +354,26 @@ public class EventListFragment extends ListFragment {
 
 	private void showEventsFromJSON(String result) {
 		events.clear();
-		 
+
 		if (result.equalsIgnoreCase("[]") && !ScheduleViewerActivity.firstTime) {
 			ScheduleViewerActivity sva = (ScheduleViewerActivity) getActivity();
 			eventsEmpty = true;
 			sva.showNoEvents();
 			parseJSON("");
 		} else {
-		parseJSON(result);
+			parseJSON(result);
 		}
 		compareEvents();
 		EventAdapter adapter = new EventAdapter(getActivity());
 		adapter.setEvents(events);
 		setListAdapter(adapter);
-		
-		// kui refreshitakse, siis siin saadetakse välja Broadcast, et refresh on tehtud
-		if(ScheduleViewerActivity.refresh) {
+
+		// kui refreshitakse, siis siin saadetakse välja Broadcast, et refresh
+		// on tehtud
+		if (ScheduleViewerActivity.refresh) {
 			ScheduleViewerActivity sva = (ScheduleViewerActivity) getActivity();
 			sva.sendMessage();
-		}		
+		}
 		ScheduleViewerActivity.refresh = false;
 	}
 
