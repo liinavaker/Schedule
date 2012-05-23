@@ -6,15 +6,20 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ScheduleViewerActivity extends FragmentActivity {
 	public static Context context;
@@ -29,6 +34,7 @@ public class ScheduleViewerActivity extends FragmentActivity {
 	public static boolean refresh = false;
 	public static boolean deleteAll = false; 
 	public static String resultToShowEventsFromJSON = null;
+	
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -47,13 +53,34 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		String estonianDate = parseDateIntoEstonian(showtext_current);
 		currently_shown_schedule.setText(estonianDate);
 		
+	
 		TextView weekday = (TextView) findViewById(R.id.weekday);
 		String weekdayString = getWeekday(showtext_current);
 		weekday.setText(weekdayString);
 		
 		showNoEvents();
 		firstTime = false;
+		
+		LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+			      new IntentFilter("refresh_done"));
 	}
+	
+	private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+		  @Override
+		  public void onReceive(Context context, Intent intent) {
+		    // Get extra data included in the Intent
+		    String message = intent.getStringExtra("message");
+		    Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+		    Log.d("receiver", "Got message: " + message);
+		  }
+		};
+
+		@Override
+		protected void onDestroy() {
+		  // Unregister since the activity is about to be closed.
+		  LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+		  super.onDestroy();
+		}
 	
 	public Date getDate(int vahe) {
 		// Get today as a Calendar
@@ -63,6 +90,7 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		java.sql.Date date = new java.sql.Date(cal.getTimeInMillis());
 		return date;
 	}
+	
 
 	// TODO: onLeftSwipe ja onRightSwipe näitavad vastavalt eelmise ja järgmine päeva tunniplaani. 
 /*	  private void onLeftSwipe() {
@@ -123,6 +151,7 @@ public class ScheduleViewerActivity extends FragmentActivity {
 		}
 		fragment.eventsEmpty = false;
 	}
+		    
 	
 	public static int getDayOfWeekFromDatetoString(String date) {
 		// Tükeldan Date-tüüpi kuupäeva (yyyy-mm-dd) ära eraldi kolmeks
@@ -149,6 +178,15 @@ public class ScheduleViewerActivity extends FragmentActivity {
 
 		return dayParsed;
 	}
+	
+	public void sendMessage() {
+		  Log.d("sender", "Broadcasting message");
+		  Intent intent = new Intent("refresh_done");
+		  // You can also include some extra data.
+		  intent.putExtra("message", "Sündmused on uuendatud");
+		  LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+		}
+	
 	
 	public String getWeekday (String current_date) {
 		int weekdayInNum = getDayOfWeekFromDatetoString(showtext_current);

@@ -25,6 +25,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v4.app.ListFragment;
@@ -34,7 +35,7 @@ public class EventListFragment extends ListFragment {
 
 	// Seadistatakse väljaspool klassi, ilma instantsi loomata
 	public static String userID = "";
-
+	public boolean finish = false;
 	public ArrayList<Event> events = new ArrayList<Event>();
 	public String showtext_previous;
 	public String showtext_next;
@@ -169,6 +170,11 @@ public class EventListFragment extends ListFragment {
 		dialog.setMessage(message);
 		dialog.setButton("OK", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
+				if(finish) {
+					ScheduleViewerActivity sva = (ScheduleViewerActivity) getActivity();
+					sva.finish();
+					finish = false;
+				}
 				return;
 			}
 		});
@@ -205,6 +211,7 @@ public class EventListFragment extends ListFragment {
 		} 
 		if(result.contains("Kasutaja toimingu tõrge")){
 			Log.d("EventListFragment", "KASUTAJA TOIMINGU TÕRGE");
+			finish = true;
 			showAlert("Tõrge", "Sellisele ID-le vastet ei leidu");
 			if (onNextDateClicked) {
 				getPreviousDateSchedule();
@@ -328,7 +335,7 @@ public class EventListFragment extends ListFragment {
 				ScheduleViewerActivity sva = (ScheduleViewerActivity) getActivity();
 				eventsEmpty = true;
 				sva.showNoEvents();
-			}
+			} 
 			else {
 				Log.d("EventListFragment", "parseJSON. events.size =" + events.size());
 				eventsEmpty = false;
@@ -367,8 +374,13 @@ public class EventListFragment extends ListFragment {
 		EventAdapter adapter = new EventAdapter(getActivity());
 		adapter.setEvents(events);
 		setListAdapter(adapter);
-		ScheduleViewerActivity.refresh = false;
 		
+		// kui refreshitakse, siis siin saadetakse välja Broadcast, et refresh on tehtud
+		if(ScheduleViewerActivity.refresh) {
+			ScheduleViewerActivity sva = (ScheduleViewerActivity) getActivity();
+			sva.sendMessage();
+		}		
+		ScheduleViewerActivity.refresh = false;
 	}
 
 	public void compareEvents() {
@@ -411,12 +423,12 @@ public class EventListFragment extends ListFragment {
 			if (result.length() == 0 || result == null) {
 				showAlert("Ühenduse viga",
 						"Tunniplaani kuvamine ebaõnnestus. Palun kontrolli seadme Interneti ühendust.");
+				ScheduleViewerActivity.refresh = false;
 				if (onNextDateClicked) {
 					getPreviousDateSchedule();
 				} else {
 					getNextDateSchedule();
 				}
-
 			}
 
 			if (result == "[]") {
